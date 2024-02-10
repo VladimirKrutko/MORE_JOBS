@@ -6,5 +6,7 @@ class Loader:
     
     def crawler(self, url, data_type):
         crawl_data = requests.get(url).text
-        with open(f'./temp_data/{data_type}_{int(time.time() * Loader.TIME_POWER )}' +  + '.txt', 'w') as file:
+        file_name = f"{data_type}_{int(time.time() * Loader.TIME_POWER )}.html"
+        with open(f'./temp_data/{file_name}', 'w') as file:
             file.write(crawl_data)
+        return file_name
