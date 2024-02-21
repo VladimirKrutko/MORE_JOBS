@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 offer*.html
 *.zip
+.mr_env
 # C extensions
 *.so
 *.html

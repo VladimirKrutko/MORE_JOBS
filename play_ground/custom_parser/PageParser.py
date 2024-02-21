@@ -3,13 +3,13 @@ import pdb
 from bs4 import BeautifulSoup
 
 class PageParser:
-    PARSED_FILEDS = ['employmentType', 'industry', 'baseSalary', 'description', 'jobBenefits','responsibilities', 'experienceRequirements']
+    PARSED_FILEDS = ['employmentType','title', 'industry', 'baseSalary', 'description', 'jobBenefits','responsibilities', 'experienceRequirements']
     
     def __init__(self, file_path) -> None:
         self.doc = self.create_doc(file_path)
         
     def create_doc(self, file_path):
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding="utf-8" ) as file:
             soup = BeautifulSoup(file, 'html.parser')
         return soup
     
