@@ -1,7 +1,8 @@
 import requests
 from datetime import datetime
+from base_crawler import BaseCrawler
 
-class BaseCrawler:
+class BaseCrawler(BaseCrawler):
     _instances = {'GET': None, 'POST': None}
 
     def __new__(cls, http_method='GET', *args, **kwargs):
