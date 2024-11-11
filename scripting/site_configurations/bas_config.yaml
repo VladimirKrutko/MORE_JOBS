@@ -1,18 +1,7 @@
-site_name: "Example Site"
-start_url: "https://www.example.com"
-
-crawler:
-  interval: 10  # interwal for crawler system
-  
-login:
-  username: "user"
-  password: "pass"
-  login_url: "https://www.example.com/login"
-  script_name: "" # name of login script
-
-parser:
-  parser_name: '' #parserser script name
-
+site_name: ""
+start_url: ""
+crawler_interwal: 0
+login: true
+login_url: ''
+accept_cookies_path: ''
 workers: 1 # continers count
-parser_queue: '' # sqs queue name
-crawler_queue: '' # sqs queue name
