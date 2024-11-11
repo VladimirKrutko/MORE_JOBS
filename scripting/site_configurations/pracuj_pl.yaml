@@ -1,5 +1,6 @@
 site_name: "pracuj_pl"
 start_url: "https://it.pracuj.pl/praca"
+domain: 'pl'
 crawler_interwal: 0
 login: true
 login_url: 'https://www.pracuj.pl/'
