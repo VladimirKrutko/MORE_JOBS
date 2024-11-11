@@ -113,6 +113,8 @@ class OfferData(Base):
     id = Column(Integer, primary_key=True)
     id_offer = Column(Integer, ForeignKey('offer.id'))
     data = Column(JSON)
+    requirements = Column(Text)
+    responsibilities = Column(Text)
     id_original_language = Column(Integer, ForeignKey('language.id'))
     translated_data = Column(JSON)
     create_date = Column(DateTime, default=datetime.utcnow)

@@ -1,12 +1,11 @@
 import json
+from abc import ABC
 from bs4 import BeautifulSoup
 
-class BaseParser:
-    def __init__(self, resonce_result, response_code, response_headers, url):
-        self.page_content = resonce_result
-        self.response_code = response_code
-        self.response_headers = response_headers
-        self.url = url
-
-    def parse(self):
-        pass
+class BaseParser(ABC):
+    def __init__(self, parsed_site):
+        self.parsed_site = parsed_site
+        self.parse_result = {}
+    async def parse(self, response_result):
+        return self.parse_result
+    
