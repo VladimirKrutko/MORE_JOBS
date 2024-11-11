@@ -1,0 +1,7 @@
+site_name: "pracuj_pl"
+start_url: "https://it.pracuj.pl/praca"
+crawler_interwal: 0
+login: true
+login_url: 'https://www.pracuj.pl/'
+accept_cookies_path: '//button[@data-test="button-submitCookie"]'
+workers: 1 # continers count

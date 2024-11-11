@@ -1,0 +1,18 @@
+site_name: "Example Site"
+start_url: "https://www.example.com"
+
+crawler:
+  interval: 10  # interwal for crawler system
+  
+login:
+  username: "user"
+  password: "pass"
+  login_url: "https://www.example.com/login"
+  script_name: "" # name of login script
+
+parser:
+  parser_name: '' #parserser script name
+
+workers: 1 # continers count
+parser_queue: '' # sqs queue name
+crawler_queue: '' # sqs queue name
