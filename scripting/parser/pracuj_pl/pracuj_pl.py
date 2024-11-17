@@ -3,10 +3,9 @@ from parser.base_parser import *
 
 class PracujPLParser(BaseParser):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
-    def __init__(self, parsed_site):
-        super().__init__(parsed_site)
-        self.parsed_result = {
-            'site': self.parsed_site,
+    RESULT_TEMPLATE ={
+            'url': None,
+            'site': 'pracuj.pl',
             'company_name': None,
             'company_url': None,
             'company_description': None,
@@ -22,6 +21,11 @@ class PracujPLParser(BaseParser):
             'salary': None,
             'business_type': None,
             }
+    WORKING_TIME = 8
+    WORKING_DAYS = 20
+    
+    def __init__(self, parsed_site):
+        super().__init__(parsed_site)
         
     JSON_PATHS = {
         'company_name': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'displayEmployerName'],
@@ -29,26 +33,51 @@ class PracujPLParser(BaseParser):
         'offer_title': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'jobTitle'],
         'position_level': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'positionLevels'],
         'technologies': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'textSections'],
+        'requairemtns': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
+        'responsibilities': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
+        'language': ['props', 'pageProps', 'langCode'],
+        'salary': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'typesOfContracts'],
     }
     
-    def initalize_variables(self, responce_result, url):
+    def initalize_variables(self, page_content, url):
         self.url = url
-        self.doc = BeautifulSoup(responce_result, 'html.parser')
+        self.doc = BeautifulSoup(page_content, 'html.parser')
         self.page_json = self.extract_json()
         
-    def parse(self, responce_result, url):
-        self.initalize_variables(responce_result, url)
-        self.parse_page(responce_result)
-        return self.parsed_result
+    def parse(self, page_content, url):
+        result = self.RESULT_TEMPLATE.copy()
+        self.initalize_variables(page_content, url)
+        self.parse_offer_data(result)
+        return result
     
-    def parse_offer_data(self):
-        self.parsed_result['company_name'] = self.get_json_value(self.page_json, self.JSON_PATHS['company_name'])
-        self.parsed_result['company_description'] = self.parse_company_description()
-        self.parsed_result['offer_title'] = self.get_json_value(self.page_json, self.JSON_PATHS['offer_title'])
-        self.parsed_result['position_level'] = self.get_json_value(self.page_json, self.JSON_PATHS['position_level'])
-        self.parsed_result['technology_list'] = self.parse_technology_list()
-        self.parsed_result['offer_description'] = ''
-        # self.parse_offer_description()
+    def parse_offer_data(self, result):
+        result['company_name'] = self.get_json_value(self.page_json, self.JSON_PATHS['company_name'])
+        result['company_description'] = self.parse_company_description()
+        result['offer_title'] = self.get_json_value(self.page_json, self.JSON_PATHS['offer_title'])
+        result['position_level'] = self.get_json_value(self.page_json, self.JSON_PATHS['position_level'])
+        result['technology_list'] = self.parse_technology_list()
+        result['requirements'] = self.parse_rr_section('requirements')
+        result['responsibilities'] = self.parse_rr_section('responsibilities')
+        result['language'] = self.get_json_value(self.page_json, self.JSON_PATHS['language'])
+        result['salary'] = self.parse_salary()
+    
+    def parse_salary(self):
+        salary_data = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
+        process_salary = lambda salary: {'salary_amount': self.salary_amount(salary), 'employment_type': salary['name']}
+        return list(map(process_salary, salary_data)) if salary_data else None
+    
+    def salary_amount(self, salary):
+        salary_amount = (
+            f"{salary['from'] * self.WORKING_TIME * self.WORKING_DAYS}-{salary['to'] * self.WORKING_TIME * self.WORKING_DAYS}"
+            if salary['timeUnit']['shortForm'] in ('godz', 'h') or 'h' in salary['timeUnit']['shortForm']
+            else f"{salary['from']}-{salary['to']}"
+        )
+        return salary_amount        
+
+    def parse_rr_section(self, section_name):
+        base_section = self.get_json_value(self.page_json, self.JSON_PATHS['company_description'])
+        desctiption_section = self.find_section(base_section, section_name)
+        return self.squish(" ".join(desctiption_section['model']['paragraphs'])) if desctiption_section else None
     
     def parse_technology_list(self):
         technology_list = {}
@@ -57,10 +86,6 @@ class PracujPLParser(BaseParser):
         technology_list['required'] = get_techology('technologies-expected').get('textElements')
         technology_list['expected'] = get_techology('technologies-optional').get('textElements')
         return technology_list
-        # next((tech for tech in offer_technologies if tech['sectionType'] == 'technologies-expected'), None)['textElements']
-        # base_section = self.find_section(self.offer_section, 'technologies')
-        # technology_section = self.find_section(base_section['subSections'], 'technologies-expected')
-        # return [technology['name'] for technology in technology_section['model']['technologies']] if technology_section else None
         
     def parse_company_description(self):
         base_section = self.get_json_value(self.page_json, self.JSON_PATHS['company_description'])
@@ -68,7 +93,7 @@ class PracujPLParser(BaseParser):
         return self.squish(" ".join(desctiption_section['model']['paragraphs'])) if desctiption_section else None
         
     def find_section(self, seection_list, section_name):
-        return next((section for section in seection_list if section['sectionName'] == section_name), None)
+        return next((section for section in seection_list if section['sectionType'] == section_name), None)
         
     def squish(text):
         return re.sub(r'\s+', ' ', text).strip()
