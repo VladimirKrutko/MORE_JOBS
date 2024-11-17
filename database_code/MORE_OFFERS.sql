@@ -111,6 +111,7 @@ CREATE TABLE "offer_salary" (
   "id" serial PRIMARY KEY,
   "id_salary" integer,
   "id_offer" integer,
+  "employment_type" varcahr,
   "create_date" timestamp,
   "update_date" timestamp
 );
