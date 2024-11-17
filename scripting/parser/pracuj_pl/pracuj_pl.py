@@ -17,9 +17,8 @@ class PracujPLParser(BaseParser):
             'responsibilities': None,
             'language': None,
             'city': None,
-            'country': None,
             'salary': None,
-            'business_type': None,
+            'work_type': None,
             }
     WORKING_TIME = 8
     WORKING_DAYS = 20
@@ -37,6 +36,8 @@ class PracujPLParser(BaseParser):
         'responsibilities': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
         'language': ['props', 'pageProps', 'langCode'],
         'salary': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'typesOfContracts'],
+        'work_type': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'workModes'],
+        'locaiton': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'workplaces'],
     }
     
     def initalize_variables(self, page_content, url):
@@ -51,6 +52,7 @@ class PracujPLParser(BaseParser):
         return result
     
     def parse_offer_data(self, result):
+        result['url'] = self.url
         result['company_name'] = self.get_json_value(self.page_json, self.JSON_PATHS['company_name'])
         result['company_description'] = self.parse_company_description()
         result['offer_title'] = self.get_json_value(self.page_json, self.JSON_PATHS['offer_title'])
@@ -60,10 +62,34 @@ class PracujPLParser(BaseParser):
         result['responsibilities'] = self.parse_rr_section('responsibilities')
         result['language'] = self.get_json_value(self.page_json, self.JSON_PATHS['language'])
         result['salary'] = self.parse_salary()
+        result['work_type'] = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
+        result['city'] = self.parse_location(self, 'city')
+        result['country'] = self.parse_location(self, 'country')
+    
+    def parse_location(self, location_type):
+        location_data = self.get_json_value(self.page_json, self.JSON_PATHS['locaiton'])
+        location_result = set()
+        for location in location_data:
+            match location_type:
+                case 'city':
+                    location_result.add(location['inlandLocation']['location']['name'])
+                case 'country':
+                    location_result.add(location['inlandLocation']['location']['country']['name'])
+                case _:
+                    location_result.add(None)
+        return location_result                            
+
+    def parse_work_type(self):
+        work_type = self.get_json_value(self.page_json, self.JSON_PATHS['work_type'])
+        return [wt['code'] for wt in work_type] if work_type else None
     
     def parse_salary(self):
         salary_data = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
-        process_salary = lambda salary: {'salary_amount': self.salary_amount(salary), 'employment_type': salary['name']}
+        process_salary = lambda salary: {
+            'salary_amount': self.salary_amount(salary), 
+            'employment_type': salary['name'], 
+            'currency': salary['currency']['code']
+            }
         return list(map(process_salary, salary_data)) if salary_data else None
     
     def salary_amount(self, salary):
