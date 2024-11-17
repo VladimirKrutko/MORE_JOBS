@@ -28,6 +28,7 @@ CREATE TABLE "location" (
 CREATE TABLE "offer" (
   "id" serial PRIMARY KEY,
   "name" varchar,
+  "work_type" varchar,
   "id_company" integer,
   "id_position_level" integer,
   "create_date" timestamp,
@@ -116,6 +117,21 @@ CREATE TABLE "offer_salary" (
   "update_date" timestamp
 );
 
+CREATE TABLE "working_type" (
+  "id" serial PRIMARY KEY,
+  "type" varchar UNIQUE,
+  "create_date" timestamp,
+  "update_date" timestamp
+);
+
+CREATE TABLE "offer_working_type" (
+  "id" serial PRIMARY KEY,
+  "id_working_type" integer,
+  "if_offer" integer,
+  "create_date" timestamp,
+  "update_date" timestamp
+);
+
 ALTER TABLE "location" ADD FOREIGN KEY ("site_id") REFERENCES "site" ("id");
 
 ALTER TABLE "offer" ADD FOREIGN KEY ("id_company") REFERENCES "company" ("id");
@@ -141,3 +157,7 @@ ALTER TABLE "offer_geography" ADD FOREIGN KEY ("id_offer") REFERENCES "offer" ("
 ALTER TABLE "offer_salary" ADD FOREIGN KEY ("id_salary") REFERENCES "salary" ("id");
 
 ALTER TABLE "offer_salary" ADD FOREIGN KEY ("id_offer") REFERENCES "offer" ("id");
+
+ALTER TABLE "offer_working_type" ADD FOREIGN KEY ("id_working_type") REFERENCES "working_type" ("id");
+
+ALTER TABLE "offer_working_type" ADD FOREIGN KEY ("if_offer") REFERENCES "offer" ("id");
