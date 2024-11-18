@@ -1,24 +1,18 @@
 import json
+import random
 from playwright.sync_api import sync_playwright
 from base_login import BaseLogin
 
 class PlaywrightLogin(BaseLogin):
-    def __init__(self):
-        # Загрузка прокси из файла proxy_list.json
-        with open('proxy_list.json', 'r') as f:
-            proxy_list = json.load(f)
-        valid_proxy = next((proxy for proxy in proxy_list if not proxy['banned']), None)
-        self.proxy = valid_proxy.get('url') if valid_proxy else None
-        
-    def login(self):
+    def login(self, proxy):
         with sync_playwright() as p:
-            browser = p.chromium.launch(proxy={"server": self.proxy}, headless=False)
+            browser = p.chromium.launch(proxy={"server": proxy}, headless=False)
             context = browser.new_context()
             page = context.new_page()
 
             # Переход на страницу логина (например, login_url)
             login_url = "https://it.pracuj.pl/praca"
-            page.goto(login_url)
+            page.goto(login_url, timeout=60000)
 
             # Нажатие на кнопку принятия cookies
             page.locator("//button[@data-test=\"button-submitCookie\"]").click()
@@ -37,6 +31,20 @@ class PlaywrightLogin(BaseLogin):
             }
 
 # Использование
+
+with open('proxy_list.json', 'r') as f:
+    proxy_list = json.load(f)
+
+valid_proxy = [proxy for proxy in proxy_list if not proxy['banned']]
+
 login_instance = PlaywrightLogin()
-credentials = login_instance.login()
+for proxy in valid_proxy:
+    
+    try:
+        credentials = login_instance.login(proxy['url'])
+        break
+    except Exception as e:
+        print(e)
+        continue
+# credentials = login_instance.login( random.choice(valid_proxy).get('url'))
 print(credentials)
