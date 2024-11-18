@@ -1,6 +1,4 @@
-import json
 from abc import ABC
-from bs4 import BeautifulSoup
 
 class BaseParser(ABC):
     def __init__(self, parsed_site):
