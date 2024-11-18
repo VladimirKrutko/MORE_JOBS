@@ -59,6 +59,7 @@ class PracujPLParser(BaseParser):
         result['position_level'] = self.get_json_value(self.page_json, self.JSON_PATHS['position_level'])
         result['technology_list'] = self.parse_technology_list()
         result['requirements'] = self.parse_rr_section('requirements')
+        
         result['responsibilities'] = self.parse_rr_section('responsibilities')
         result['language'] = self.get_json_value(self.page_json, self.JSON_PATHS['language'])
         result['salary'] = self.parse_salary()
@@ -103,7 +104,11 @@ class PracujPLParser(BaseParser):
     def parse_rr_section(self, section_name):
         base_section = self.get_json_value(self.page_json, self.JSON_PATHS['company_description'])
         desctiption_section = self.find_section(base_section, section_name)
-        return self.squish(" ".join(desctiption_section['model']['paragraphs'])) if desctiption_section else None
+        join_bullets = lambda section: "@@@@".join(section['model']['bullets'])
+        if desctiption_section.get('subSections'):
+            return "@@@@".join([join_bullets(sub_section) for sub_section in desctiption_section['subSections']]) if desctiption_section else None
+        else:
+            return join_bullets(desctiption_section) if desctiption_section else None
     
     def parse_technology_list(self):
         technology_list = {}
