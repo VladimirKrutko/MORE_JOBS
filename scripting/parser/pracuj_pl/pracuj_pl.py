@@ -59,7 +59,6 @@ class PracujPLParser(BaseParser):
         result['position_level'] = self.get_json_value(self.page_json, self.JSON_PATHS['position_level'])
         result['technology_list'] = self.parse_technology_list()
         result['requirements'] = self.parse_rr_section('requirements')
-        
         result['responsibilities'] = self.parse_rr_section('responsibilities')
         result['language'] = self.get_json_value(self.page_json, self.JSON_PATHS['language'])
         result['salary'] = self.parse_salary()
