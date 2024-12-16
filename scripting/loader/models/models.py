@@ -211,3 +211,15 @@ class CompanyBusinessType(Base):
 
     company = relationship("Company", back_populates="business_types")
     business_type = relationship("BusinessType", back_populates="company_business_types")
+
+class OfferWorkingType(Base):
+    __tablename__ = 'offer_working_type'
+
+    id = Column(Integer, primary_key=True)
+    id_working_type = Column(Integer, ForeignKey('working_type.id'))
+    id_offer = Column(Integer, ForeignKey('offer.id'))
+    create_date = Column(DateTime, default=datetime.utcnow)
+    update_date = Column(DateTime, default=datetime.utcnow)
+
+    working_type = relationship("WorkingType", back_populates="offer_working_types")
+    offer = relationship("Offer", back_populates="offer_working_types")

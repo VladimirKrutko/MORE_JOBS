@@ -6,26 +6,8 @@ from scripting.parser.base_parser import BaseParser
 
 class PracujPLParser(BaseParser):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
-    RESULT_TEMPLATE = {
-        'url': None,
-        'site': 'pracuj.pl',
-        'company_name': None,
-        'company_url': None,
-        'company_description': None,
-        'offer_title': None,
-        'position_level': None,
-        'technology_list': None,
-        'offer_description': None,
-        'requirements': None,
-        'responsibilities': None,
-        'language': None,
-        'city': None,
-        'salary': None,
-        'work_type': None,
-    }
     WORKING_TIME = 8
     WORKING_DAYS = 20
-
     JSON_PATHS = {
         'company_name': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'displayEmployerName'],
         'company_description': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
@@ -62,6 +44,7 @@ class PracujPLParser(BaseParser):
             'offer_title': self.get_json_value(self.page_json, self.JSON_PATHS['offer_title']),
             'position_level': self.get_json_value(self.page_json, self.JSON_PATHS['position_level']),
             'technology_list': self.parse_technology_list(),
+            'offer_description': self.parse_offer_description(),
             'requirements': self.parse_rr_section('requirements'),
             'responsibilities': self.parse_rr_section('responsibilities'),
             'language': self.get_json_value(self.page_json, self.JSON_PATHS['language']),
@@ -89,6 +72,10 @@ class PracujPLParser(BaseParser):
                     location_result.add(None)
         return location_result
 
+    def parse_offer_description(self):
+        desc_section = self.find_section('about-project')
+        return self.squish(" ".join(desc_section['model']['paragraphs']))
+    
     def parse_salary(self):
         salary_data = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
         process_salary = lambda salary: {
@@ -115,7 +102,7 @@ class PracujPLParser(BaseParser):
                 [join_bullets(sub_section) for sub_section in description_section['subSections']]
             ) if description_section else None
         return join_bullets(description_section) if description_section else None
-
+    
     def parse_technology_list(self):
         technology_list = {}
         offer_technologies = self.get_json_value(self.page_json, self.JSON_PATHS['technologies'])
