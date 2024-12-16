@@ -1,25 +1,24 @@
-import json
 import re
+import json
 from bs4 import BeautifulSoup
 from scripting.parser.base_parser import BaseParser
-
 
 class PracujPLParser(BaseParser):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
     WORKING_TIME = 8
     WORKING_DAYS = 20
     JSON_PATHS = {
-        'company_name': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'displayEmployerName'],
-        'company_description': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
-        'offer_title': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'jobTitle'],
-        'position_level': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'positionLevels'],
-        'technologies': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'textSections'],
-        'requirements': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
-        'responsibilities': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'],
-        'language': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'jobOfferLanguage', 'isoCode'],
-        'salary': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'typesOfContracts'],
-        'work_type': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'workModes'],
-        'location': ['props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'workplaces'],
+        'company_name': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'displayEmployerName'),
+        'company_description': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'),
+        'offer_title': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'jobTitle'),
+        'position_level': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'positionLevels'),
+        'technologies': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'textSections'),
+        'requirements': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'),
+        'responsibilities': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'sections'),
+        'language': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'jobOfferLanguage', 'isoCode'),
+        'salary': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'typesOfContracts'),
+        'work_type': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'employment', 'workModes'),
+        'location': ('props', 'pageProps', 'dehydratedState', 'queries', 0, 'state', 'data', 'attributes', 'workplaces'),
     }
 
     def __init__(self, parsed_site):
@@ -73,11 +72,14 @@ class PracujPLParser(BaseParser):
         return location_result
 
     def parse_offer_description(self):
-        desc_section = self.find_section('about-project')
+        desc_section = self.find_section(self.get_json_value(self.page_json, self.JSON_PATHS['company_description']), 'about-project')
         return self.squish(" ".join(desc_section['model']['paragraphs']))
     
     def parse_salary(self):
         salary_data = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
+        if salary_data[0]['salary'] is None:
+            return '-'
+
         process_salary = lambda salary: {
             'salary_amount': self.salary_amount(salary['salary']),
             'employment_type': salary['name'],
@@ -86,6 +88,8 @@ class PracujPLParser(BaseParser):
         return list(map(process_salary, salary_data)) if salary_data else None
 
     def salary_amount(self, salary):
+        if salary is None:
+            return '-'
         return (
             f"{salary['from'] * self.WORKING_TIME * self.WORKING_DAYS}-{salary['to'] * self.WORKING_TIME * self.WORKING_DAYS}"
             if salary['timeUnit']['longForm']['name'] != 'monthly'
@@ -129,7 +133,7 @@ class PracujPLParser(BaseParser):
     def extract_json(self):
         json_text = self.doc.find('script', id='__NEXT_DATA__').string
         return json.loads(json_text.replace("'", '"').replace('undefined', '"undefined"'))
-
+    
     def get_json_value(self, json_obj, json_path, key_index=0):
         try:
             return self.get_json_value(json_obj[json_path[key_index]], json_path, key_index + 1)
