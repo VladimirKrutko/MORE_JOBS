@@ -1,163 +1,199 @@
-CREATE TABLE "site" (
-  "id" serial PRIMARY KEY,
-  "name" varchar,
-  "domain" varchar,
-  "create_date" timestamp,
-  "update_date" timestamp
+-- SQL Code for the Database Schema
+CREATE TABLE site (
+                      id SERIAL PRIMARY KEY,
+                      name VARCHAR,
+                      domain VARCHAR,
+                      create_date TIMESTAMP,
+                      update_date TIMESTAMP
 );
 
-CREATE TABLE "company" (
-  "id" serial PRIMARY KEY,
-  "name" varchar,
-  "url" varchar,
-  "business_type" varchar,
-  "description" text,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE company (
+                         id SERIAL PRIMARY KEY,
+                         name VARCHAR,
+                         url VARCHAR,
+                         description TEXT,
+                         create_date TIMESTAMP,
+                         update_date TIMESTAMP
 );
 
-CREATE TABLE "location" (
-  "id" serial PRIMARY KEY,
-  "site_id" integer,
-  "url" varchar,
-  "active" bool,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE location (
+                          id SERIAL PRIMARY KEY,
+                          site_id INTEGER,
+                          url VARCHAR,
+                          active BOOLEAN,
+                          create_date TIMESTAMP,
+                          update_date TIMESTAMP
 );
 
-CREATE TABLE "offer" (
-  "id" serial PRIMARY KEY,
-  "name" varchar,
-  "work_type" varchar,
-  "id_company" integer,
-  "id_position_level" integer,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE offer (
+                       id SERIAL PRIMARY KEY,
+                       name VARCHAR,
+                       id_company INTEGER,
+                       create_date TIMESTAMP,
+                       update_date TIMESTAMP
 );
 
-CREATE TABLE "offer_location" (
-  "id" serial PRIMARY KEY,
-  "offer_id" integer,
-  "location_id" integer,
-  "id_position_level" integer,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE offer_location (
+                                id SERIAL PRIMARY KEY,
+                                offer_id INTEGER,
+                                location_id INTEGER,
+                                id_position_level INTEGER,
+                                create_date TIMESTAMP,
+                                update_date TIMESTAMP
 );
 
-CREATE TABLE "technology" (
-  "id" serial PRIMARY KEY,
-  "name" varchar UNIQUE,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE technology (
+                            id SERIAL PRIMARY KEY,
+                            name VARCHAR UNIQUE,
+                            create_date TIMESTAMP,
+                            update_date TIMESTAMP
 );
 
-CREATE TABLE "position_level" (
-  "id" serial PRIMARY KEY,
-  "level" varchar UNIQUE,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE position_level (
+                                id SERIAL PRIMARY KEY,
+                                level VARCHAR UNIQUE,
+                                create_date TIMESTAMP,
+                                update_date TIMESTAMP
 );
 
-CREATE TABLE "offer_technology" (
-  "id" serial PRIMARY KEY,
-  "id_offer" integer,
-  "id_technology" integer,
-  "obligatory" boolean,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE offer_technology (
+                                  id SERIAL PRIMARY KEY,
+                                  id_offer INTEGER,
+                                  id_technology INTEGER,
+                                  obligatory BOOLEAN,
+                                  create_date TIMESTAMP,
+                                  update_date TIMESTAMP
 );
 
-CREATE TABLE "offer_data" (
-  "id" serial PRIMARY KEY,
-  "id_offer" integer,
-  "data" jsonb,
-  "original_language" varchar,
-  "translated_data" jsonb,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE offer_data (
+                            id SERIAL PRIMARY KEY,
+                            id_offer INTEGER,
+                            data JSONB,
+                            id_original_language INTEGER,
+                            translated_data JSONB,
+                            create_date TIMESTAMP,
+                            update_date TIMESTAMP
 );
 
-CREATE TABLE "country" (
-  "id" serial PRIMARY KEY,
-  "name" varchar,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE requirements (
+                              id SERIAL PRIMARY KEY,
+                              data TEXT,
+                              create_date TIMESTAMP,
+                              update_date TIMESTAMP
 );
 
-CREATE TABLE "city" (
-  "id" serial PRIMARY KEY,
-  "name" varchar,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE offer_position_level (
+                                      id_offer INTEGER,
+                                      id_position_level INTEGER,
+                                      create_date TIMESTAMP,
+                                      update_date TIMESTAMP
 );
 
-CREATE TABLE "offer_geography" (
-  "id" serial PRIMARY KEY,
-  "id_city" integer,
-  "id_country" integer,
-  "id_offer" integer,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE country (
+                         id SERIAL PRIMARY KEY,
+                         name VARCHAR,
+                         create_date TIMESTAMP,
+                         update_date TIMESTAMP
 );
 
-CREATE TABLE "salary" (
-  "id" serial PRIMARY KEY,
-  "value" varchar,
-  "contract_type" varchar,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE city (
+                      id SERIAL PRIMARY KEY,
+                      name VARCHAR,
+                      create_date TIMESTAMP,
+                      update_date TIMESTAMP
 );
 
-CREATE TABLE "offer_salary" (
-  "id" serial PRIMARY KEY,
-  "id_salary" integer,
-  "id_offer" integer,
-  "employment_type" varcahr,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE offer_geography (
+                                 id SERIAL PRIMARY KEY,
+                                 id_city INTEGER,
+                                 id_country INTEGER,
+                                 id_offer INTEGER,
+                                 create_date TIMESTAMP,
+                                 update_date TIMESTAMP
 );
 
-CREATE TABLE "working_type" (
-  "id" serial PRIMARY KEY,
-  "type" varchar UNIQUE,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE language (
+                          id SERIAL PRIMARY KEY,
+                          name VARCHAR,
+                          create_date TIMESTAMP,
+                          update_date TIMESTAMP
 );
 
-CREATE TABLE "offer_working_type" (
-  "id" serial PRIMARY KEY,
-  "id_working_type" integer,
-  "if_offer" integer,
-  "create_date" timestamp,
-  "update_date" timestamp
+CREATE TABLE salary (
+                        id SERIAL PRIMARY KEY,
+                        value VARCHAR,
+                        contract_type VARCHAR,
+                        create_date TIMESTAMP,
+                        update_date TIMESTAMP
 );
 
-ALTER TABLE "location" ADD FOREIGN KEY ("site_id") REFERENCES "site" ("id");
+CREATE TABLE offer_salary (
+                              id SERIAL PRIMARY KEY,
+                              id_salary INTEGER,
+                              id_offer INTEGER,
+                              create_date TIMESTAMP,
+                              update_date TIMESTAMP
+);
 
-ALTER TABLE "offer" ADD FOREIGN KEY ("id_company") REFERENCES "company" ("id");
+CREATE TABLE business_type (
+                               id SERIAL PRIMARY KEY,
+                               type VARCHAR,
+                               create_date TIMESTAMP,
+                               update_date TIMESTAMP
+);
 
-ALTER TABLE "offer" ADD FOREIGN KEY ("id_position_level") REFERENCES "position_level" ("id");
+CREATE TABLE company_business_type (
+                                       id SERIAL PRIMARY KEY,
+                                       id_company INTEGER,
+                                       id_business_type INTEGER,
+                                       create_date TIMESTAMP,
+                                       update_date TIMESTAMP
+);
 
-ALTER TABLE "offer_location" ADD FOREIGN KEY ("offer_id") REFERENCES "offer" ("id");
+CREATE TABLE responsibilities (
+                                  id SERIAL PRIMARY KEY,
+                                  data TEXT,
+                                  create_date TIMESTAMP,
+                                  update_date TIMESTAMP
+);
 
-ALTER TABLE "offer_location" ADD FOREIGN KEY ("location_id") REFERENCES "location" ("id");
+CREATE TABLE offer_responsibilities (
+                                        id SERIAL PRIMARY KEY,
+                                        id_offer INTEGER,
+                                        id_responsibilities INTEGER,
+                                        obligatory BOOLEAN,
+                                        create_date TIMESTAMP,
+                                        update_date TIMESTAMP
+);
 
-ALTER TABLE "offer_technology" ADD FOREIGN KEY ("id_offer") REFERENCES "offer" ("id");
+CREATE TABLE offer_requirements (
+                                    id SERIAL PRIMARY KEY,
+                                    id_offer INTEGER,
+                                    id_requirements INTEGER,
+                                    obligatory BOOLEAN,
+                                    create_date TIMESTAMP,
+                                    update_date TIMESTAMP
+);
 
-ALTER TABLE "offer_technology" ADD FOREIGN KEY ("id_technology") REFERENCES "technology" ("id");
-
-ALTER TABLE "offer_data" ADD FOREIGN KEY ("id_offer") REFERENCES "offer" ("id");
-
-ALTER TABLE "offer_geography" ADD FOREIGN KEY ("id_city") REFERENCES "city" ("id");
-
-ALTER TABLE "offer_geography" ADD FOREIGN KEY ("id_country") REFERENCES "country" ("id");
-
-ALTER TABLE "offer_geography" ADD FOREIGN KEY ("id_offer") REFERENCES "offer" ("id");
-
-ALTER TABLE "offer_salary" ADD FOREIGN KEY ("id_salary") REFERENCES "salary" ("id");
-
-ALTER TABLE "offer_salary" ADD FOREIGN KEY ("id_offer") REFERENCES "offer" ("id");
-
-ALTER TABLE "offer_working_type" ADD FOREIGN KEY ("id_working_type") REFERENCES "working_type" ("id");
-
-ALTER TABLE "offer_working_type" ADD FOREIGN KEY ("if_offer") REFERENCES "offer" ("id");
+-- Foreign key relationships
+ALTER TABLE location ADD FOREIGN KEY (site_id) REFERENCES site(id);
+ALTER TABLE offer ADD FOREIGN KEY (id_company) REFERENCES company(id);
+ALTER TABLE offer_location ADD FOREIGN KEY (offer_id) REFERENCES offer(id);
+ALTER TABLE offer_location ADD FOREIGN KEY (location_id) REFERENCES location(id);
+ALTER TABLE offer_technology ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE offer_technology ADD FOREIGN KEY (id_technology) REFERENCES technology(id);
+ALTER TABLE offer_data ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE offer_data ADD FOREIGN KEY (id_original_language) REFERENCES language(id);
+ALTER TABLE offer_position_level ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE offer_position_level ADD FOREIGN KEY (id_position_level) REFERENCES position_level(id);
+ALTER TABLE offer_geography ADD FOREIGN KEY (id_city) REFERENCES city(id);
+ALTER TABLE offer_geography ADD FOREIGN KEY (id_country) REFERENCES country(id);
+ALTER TABLE offer_geography ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE offer_salary ADD FOREIGN KEY (id_salary) REFERENCES salary(id);
+ALTER TABLE offer_salary ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE company_business_type ADD FOREIGN KEY (id_company) REFERENCES company(id);
+ALTER TABLE company_business_type ADD FOREIGN KEY (id_business_type) REFERENCES business_type(id);
+ALTER TABLE offer_responsibilities ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE offer_responsibilities ADD FOREIGN KEY (id_responsibilities) REFERENCES responsibilities(id);
+ALTER TABLE offer_requirements ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
+ALTER TABLE offer_requirements ADD FOREIGN KEY (id_requirements) REFERENCES requirements(id);
