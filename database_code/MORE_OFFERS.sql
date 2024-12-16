@@ -1,4 +1,16 @@
 -- SQL Code for the Database Schema
+DO $$ DECLARE
+    table_name TEXT;
+BEGIN
+    FOR table_name IN
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = 'public'
+        LOOP
+            EXECUTE format('DROP TABLE IF EXISTS %I CASCADE', table_name);
+        END LOOP;
+END $$;
+
 CREATE TABLE site (
                       id SERIAL PRIMARY KEY,
                       name VARCHAR,
@@ -69,17 +81,12 @@ CREATE TABLE offer_data (
                             id SERIAL PRIMARY KEY,
                             id_offer INTEGER,
                             data JSONB,
+                            requirements TEXT,
+                            responsibilities TEXT,
                             id_original_language INTEGER,
                             translated_data JSONB,
                             create_date TIMESTAMP,
                             update_date TIMESTAMP
-);
-
-CREATE TABLE requirements (
-                              id SERIAL PRIMARY KEY,
-                              data TEXT,
-                              create_date TIMESTAMP,
-                              update_date TIMESTAMP
 );
 
 CREATE TABLE offer_position_level (
@@ -150,31 +157,6 @@ CREATE TABLE company_business_type (
                                        update_date TIMESTAMP
 );
 
-CREATE TABLE responsibilities (
-                                  id SERIAL PRIMARY KEY,
-                                  data TEXT,
-                                  create_date TIMESTAMP,
-                                  update_date TIMESTAMP
-);
-
-CREATE TABLE offer_responsibilities (
-                                        id SERIAL PRIMARY KEY,
-                                        id_offer INTEGER,
-                                        id_responsibilities INTEGER,
-                                        obligatory BOOLEAN,
-                                        create_date TIMESTAMP,
-                                        update_date TIMESTAMP
-);
-
-CREATE TABLE offer_requirements (
-                                    id SERIAL PRIMARY KEY,
-                                    id_offer INTEGER,
-                                    id_requirements INTEGER,
-                                    obligatory BOOLEAN,
-                                    create_date TIMESTAMP,
-                                    update_date TIMESTAMP
-);
-
 -- Foreign key relationships
 ALTER TABLE location ADD FOREIGN KEY (site_id) REFERENCES site(id);
 ALTER TABLE offer ADD FOREIGN KEY (id_company) REFERENCES company(id);
@@ -193,7 +175,3 @@ ALTER TABLE offer_salary ADD FOREIGN KEY (id_salary) REFERENCES salary(id);
 ALTER TABLE offer_salary ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
 ALTER TABLE company_business_type ADD FOREIGN KEY (id_company) REFERENCES company(id);
 ALTER TABLE company_business_type ADD FOREIGN KEY (id_business_type) REFERENCES business_type(id);
-ALTER TABLE offer_responsibilities ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
-ALTER TABLE offer_responsibilities ADD FOREIGN KEY (id_responsibilities) REFERENCES responsibilities(id);
-ALTER TABLE offer_requirements ADD FOREIGN KEY (id_offer) REFERENCES offer(id);
-ALTER TABLE offer_requirements ADD FOREIGN KEY (id_requirements) REFERENCES requirements(id);
