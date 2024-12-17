@@ -33,7 +33,7 @@ class PracujPLParser(BaseParser):
         result = self.RESULT_TEMPLATE.copy()
         self.initialize_variables(page_content, url)
         self.parse_offer_data(result)
-        return result
+        return self.process_result(result)
 
     def parse_offer_data(self, result):
         result.update({

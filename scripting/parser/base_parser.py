@@ -1,3 +1,4 @@
+from copy import deepcopy
 from abc import ABC, abstractmethod
 
 class BaseParser(ABC):
@@ -30,3 +31,8 @@ class BaseParser(ABC):
     def parse(self, response_result):
         return dict
     
+    def process_result(self, result):
+        for key, value in result.items():
+            if isinstance(value, str):
+                result[key] = value.lower()
+        return result 
