@@ -16,11 +16,23 @@ CREATE TABLE company (
     update_date TIMESTAMP
 );
 
+CREATE TABLE offer_data (
+    id SERIAL PRIMARY KEY,
+    data JSONB,
+    requirements TEXT,
+    responsibilities TEXT,
+    original_language VARCHAR,
+    translated_data JSONB,
+    create_date TIMESTAMP,
+    update_date TIMESTAMP
+);
+
 CREATE TABLE offer (
     id SERIAL PRIMARY KEY,
     url VARCHAR UNIQUE,
     name VARCHAR,
     position_level VARCHAR,
+    id_data INTEGER,
     site_id INTEGER,
     id_company INTEGER,
     active BOOLEAN,
@@ -40,18 +52,6 @@ CREATE TABLE offer_technology (
     id_offer INTEGER,
     id_technology INTEGER,
     obligatory BOOLEAN,
-    create_date TIMESTAMP,
-    update_date TIMESTAMP
-);
-
-CREATE TABLE offer_data (
-    id SERIAL PRIMARY KEY,
-    id_offer INTEGER,
-    data JSONB,
-    requirements TEXT,
-    responsibilities TEXT,
-    original_language VARCHAR,
-    translated_data JSONB,
     create_date TIMESTAMP,
     update_date TIMESTAMP
 );
@@ -88,16 +88,15 @@ CREATE TABLE offer_salary (
     update_date TIMESTAMP
 );
 
+-- Добавление внешних ключей
 ALTER TABLE offer
+    ADD CONSTRAINT fk_offer_data FOREIGN KEY (id_data) REFERENCES offer_data (id),
     ADD CONSTRAINT fk_offer_site FOREIGN KEY (site_id) REFERENCES site (id),
     ADD CONSTRAINT fk_offer_company FOREIGN KEY (id_company) REFERENCES company (id);
 
 ALTER TABLE offer_technology
     ADD CONSTRAINT fk_offer_technology_offer FOREIGN KEY (id_offer) REFERENCES offer (id),
     ADD CONSTRAINT fk_offer_technology_technology FOREIGN KEY (id_technology) REFERENCES technology (id);
-
-ALTER TABLE offer_data
-    ADD CONSTRAINT fk_offer_data_offer FOREIGN KEY (id_offer) REFERENCES offer (id);
 
 ALTER TABLE offer_geography
     ADD CONSTRAINT fk_offer_geography_offer FOREIGN KEY (id_offer) REFERENCES offer (id),
