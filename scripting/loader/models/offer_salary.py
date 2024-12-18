@@ -1,9 +1,7 @@
-from sqlalchemy import Column, Integer, ForeignKey
-from sqlalchemy.orm import relationship
-from MORE_JOBS.scripting.loader.base_model import BaseModel, Session
-from MORE_JOBS.scripting.loader.db_setup import Base
-from models.salary import Salary
 from models.offer import Offer
+from models.salary import Salary
+from scripting.loader.base_model import *
+
 
 
 class OfferSalary(Base, BaseModel):

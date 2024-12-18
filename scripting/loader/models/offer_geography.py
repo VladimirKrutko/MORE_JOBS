@@ -1,9 +1,6 @@
-from sqlalchemy import Column, Integer, ForeignKey
-from sqlalchemy.orm import relationship
-from MORE_JOBS.scripting.loader.base_model import BaseModel
-from MORE_JOBS.scripting.loader.db_setup import Base, Session
 from models.offer import Offer
 from models.geography import Geography
+from scripting.loader.base_model import *
 
 
 class OfferGeography(Base, BaseModel):

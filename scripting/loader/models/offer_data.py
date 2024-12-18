@@ -1,6 +1,4 @@
-from sqlalchemy import Column, String, Text, JSON
-from MORE_JOBS.scripting.loader.base_model import BaseModel
-from MORE_JOBS.scripting.loader.db_setup import Base, Session
+from scripting.loader.base_model import *
 
 
 class OfferData(Base, BaseModel):

@@ -1,7 +1,4 @@
-from sqlalchemy import Column, String
-from MORE_JOBS.scripting.loader.base_model import BaseModel
-from MORE_JOBS.scripting.loader.db_setup import Base
-
+from scripting.loader.base_model import *
 class Salary(Base, BaseModel):
     __tablename__ = "salary"
 

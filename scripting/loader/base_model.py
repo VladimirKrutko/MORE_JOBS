@@ -1,8 +1,14 @@
 from datetime import datetime
+from scripting.loader.db_setup import Base, Session
 from db_setup import Session as SessionLocal
-from sqlalchemy import Column, Integer, DateTime
+from sqlalchemy import (
+    Column, Integer, String, Boolean, DateTime, JSON, ForeignKey, Text, UniqueConstraint
+)
+from sqlalchemy.orm import relationship
+from sqlalchemy.ext.declarative import as_declarative, declared_attr
 
 
+@as_declarative()
 class BaseModel:
     id = Column(Integer, primary_key=True)
     create_date = Column(DateTime, default=datetime.utcnow)

@@ -1,10 +1,6 @@
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
-from sqlalchemy.orm import relationship
-from MORE_JOBS.scripting.loader.base_model import BaseModel
-from MORE_JOBS.scripting.loader.db_setup import Base, Session
 from models.site import Site
 from models.company import Company
-
+from scripting.loader.base_model import *
 
 class Offer(Base, BaseModel):
     __tablename__ = "offer"
