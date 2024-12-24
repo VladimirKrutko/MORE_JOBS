@@ -1,5 +1,5 @@
-from models.site import Site
-from models.company import Company
+from scripting.loader.models.site import Site
+from scripting.loader.models.company import Company
 from scripting.loader.base_model import *
 
 class Offer(Base, BaseModel):
@@ -28,10 +28,10 @@ class Offer(Base, BaseModel):
         id_company = company.id if company else -1
 
         id_data = data_id if data_id else -1
-
-        if cls.exists(url=url):
+        offer_row = cls.exists(url=url)
+        if offer_row:
             print(f"Offer with URL '{url}' already exists!")
-            return None
+            return offer_row
 
         offer = cls(
             url=url,

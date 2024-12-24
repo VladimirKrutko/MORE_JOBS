@@ -9,18 +9,14 @@ class OfferData(Base, BaseModel):
     responsibilities = Column(Text)
     original_language = Column(String)
     translated_data = Column(JSON)
+    requirements_md5 = Column(Text)
+    responsibilities_md5 = Column(Text)
 
     @classmethod
-    def create(cls, data=None, requirements=None, responsibilities=None, original_language=None, translated_data=None):
+    def create(cls, **kwargs):
         session = Session()
 
-        offer_data = cls(
-            data=data,
-            requirements=requirements,
-            responsibilities=responsibilities,
-            original_language=original_language,
-            translated_data=translated_data
-        )
+        offer_data = cls(**kwargs)
         session.add(offer_data)
         session.commit()
         session.refresh(offer_data)

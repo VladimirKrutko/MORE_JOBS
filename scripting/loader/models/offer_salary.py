@@ -1,5 +1,5 @@
-from models.offer import Offer
-from models.salary import Salary
+from .offer import Offer
+from .salary import Salary
 from scripting.loader.base_model import *
 
 
@@ -8,8 +8,7 @@ class OfferSalary(Base, BaseModel):
     __tablename__ = "offer_salary"
 
     id_salary = Column(Integer, ForeignKey("salary.id"), nullable=False)
-    id_offer = Column(Integer, ForeignKey("offer.id"), nullable=False)
-
+    id_offer = Column(Integer, ForeignKey("offer.id"), nullable=False)    
     salary = relationship("Salary")
     offer = relationship("Offer")
 

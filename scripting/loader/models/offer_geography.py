@@ -1,14 +1,9 @@
-from models.offer import Offer
-from models.geography import Geography
 from scripting.loader.base_model import *
+from scripting.loader.models.offer import Offer
+from scripting.loader.models.geography import Geography
 
 
 class OfferGeography(Base, BaseModel):
-    """
-    Модель для таблицы 'offer_geography'.
-    Наследуется от BaseModel, включает базовые методы и поля.
-    Переопределяет метод create для поиска внешних ключей по значению.
-    """
     __tablename__ = "offer_geography"
 
     id_offer = Column(Integer, ForeignKey("offer.id"), nullable=False)

@@ -16,9 +16,11 @@ class BaseModel:
     @classmethod
     def create(cls, **kwargs):
         session = Session()
-        if cls.exists(**kwargs):
+        existing_obj = cls.exists(**kwargs)
+        if existing_obj:
             print(f"{cls.__name__} already exists!")
-            return None
+            return existing_obj
+        
         instance = cls(**kwargs)
         session.add(instance)
         session.commit()
@@ -41,4 +43,4 @@ class BaseModel:
     @classmethod
     def exists(cls, **kwargs):
         session = Session()
-        return session.query(cls).filter_by(**kwargs).first() is not None
+        return session.query(cls).filter_by(**kwargs).first()
