@@ -1,9 +1,7 @@
-import re
-import json
-from bs4 import BeautifulSoup
-from scripting.parser.base_parser import BaseParser
+from .base_methods import BaseMethods
+from scripting.parser.base_parser import *
 
-class PracujPLParser(BaseParser):
+class PracujPLParser(BaseParser, BaseMethods):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
     WORKING_TIME = 8
     WORKING_DAYS = 20
@@ -23,11 +21,6 @@ class PracujPLParser(BaseParser):
 
     def __init__(self, parsed_site):
         super().__init__(parsed_site)
-
-    def initialize_variables(self, page_content, url):
-        self.url = url
-        self.doc = BeautifulSoup(page_content, 'html.parser')
-        self.page_json = self.extract_json()
 
     def parse(self, page_content, url):
         result = self.RESULT_TEMPLATE.copy()
@@ -125,10 +118,6 @@ class PracujPLParser(BaseParser):
 
     def find_section(self, section_list, section_name):
         return next((section for section in section_list if section['sectionType'] == section_name), None)
-
-    @staticmethod
-    def squish(text):
-        return re.sub(r'\s+', ' ', text).strip()
 
     def extract_json(self):
         json_text = self.doc.find('script', id='__NEXT_DATA__').string

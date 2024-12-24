@@ -1,4 +1,7 @@
+import re
+import json
 from copy import deepcopy
+from bs4 import BeautifulSoup
 from abc import ABC, abstractmethod
 
 class BaseParser(ABC):
@@ -23,9 +26,9 @@ class BaseParser(ABC):
     def __init__(self, parsed_site):
         self.parsed_site = parsed_site
     
-    @abstractmethod
-    def initialize_variables(self,):
-        pass
+    # @abstractmethod
+    # def initialize_variables(self,):
+    #     pass
     
     @abstractmethod
     def parse(self, response_result):
