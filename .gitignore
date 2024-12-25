@@ -45,7 +45,7 @@ play_ground/*
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-system-user_accessKeys.csv
+*.csv
 # Unit test / coverage reports
 htmlcov/
 .tox/
