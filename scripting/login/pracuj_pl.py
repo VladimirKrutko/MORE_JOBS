@@ -1,5 +1,3 @@
-import json
-import random
 from playwright.sync_api import sync_playwright
 from base_login import BaseLogin
 
@@ -21,20 +19,3 @@ class PlaywrightLogin(BaseLogin):
                 "cookies": cookies,
                 "user_agent": user_agent
             }
-
-# with open('proxy_list.json', 'r') as f:
-#     proxy_list = json.load(f)
-
-# valid_proxy = [proxy for proxy in proxy_list if not proxy['banned']]
-
-login_instance = PlaywrightLogin()
-# for proxy in valid_proxy:
-    
-#     try:
-#         credentials = login_instance.login(proxy['url'])
-#         break
-#     except Exception as e:
-#         print(e)
-#         continue
-credentials = login_instance.login()
-print(credentials)
