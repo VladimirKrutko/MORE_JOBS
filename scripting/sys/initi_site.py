@@ -21,18 +21,24 @@ session = boto3.Session(
 
 def create_s3_buckets(config_data):
     s3_client = session.client('s3')
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/plugin")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/parser")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/plugin")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/parser")
     
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/plugin/response_data")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/plugin/parsed_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/plugin/response_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/plugin/parsed_data")
     
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/parser/response_data")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site_name']}/parser/parsed_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/parser/response_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/parser/parsed_data")
+    return {
+        's3_plugin_response_data': f"s3://{BUCKET_NAME}/{config_data['site']}/plugin/response_data",
+        's3_plugin_parsed_data': f"s3://{BUCKET_NAME}/{config_data['site']}/plugin/parsed_data",
+        's3_parser_response_data': f"s3://{BUCKET_NAME}/{config_data['site']}/parser/response_data",
+        's3_parser_parsed_data': f"s3://{BUCKET_NAME}/{config_data['site']}/parser/parsed_data",
+    }
 
 def create_table_record(config_data):
-    site.Site.create(name=config_data['site_name'], url=config_data['seed_url'])
+    site.Site.create(name=config_data['site'], url=config_data['seed_url'])
 
 def create_queue_parser(config_data):
     pass
