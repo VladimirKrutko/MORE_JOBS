@@ -1,6 +1,6 @@
 import boto3
 
-class Site:
+class SiteData:
     __TABLE = boto3.resource('dynamodb', region_name='eu-central-1').Table('site-data')
 
     def __init__(self, site):

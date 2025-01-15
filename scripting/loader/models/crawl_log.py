@@ -6,6 +6,7 @@ class CrawlLog(BaseModel):
     url = Column(String, nullable=False)
     site = Column(String, nullable=False)
     status = Column(String, nullable=True)
+    message = Column(String, nullable=True)
     mode = Column(String, nullable=True)
 
     @classmethod
