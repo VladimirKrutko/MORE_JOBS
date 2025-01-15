@@ -20,19 +20,20 @@ sqs_attributes = {
 def create_s3_buckets(config_data):
     s3_client = session.client('s3')
     s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/plugin")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/parser")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/placement")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/page")
     
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/plugin/response_data")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/plugin/parsed_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/placement/response_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/placement/parsed_data")
     
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/parser/response_data")
-    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/parser/parsed_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/page/response_data")
+    s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/page/parsed_data")
+
     return {
-        's3_plugin_response_data': f"s3://{BUCKET_NAME}/{config_data['site']}/plugin/response_data",
-        's3_plugin_parsed_data': f"s3://{BUCKET_NAME}/{config_data['site']}/plugin/parsed_data",
-        's3_parser_response_data': f"s3://{BUCKET_NAME}/{config_data['site']}/parser/response_data",
-        's3_parser_parsed_data': f"s3://{BUCKET_NAME}/{config_data['site']}/parser/parsed_data",
+        's3_placement_response_data': f"s3://{BUCKET_NAME}/{config_data['site']}/placement/response_data",
+        's3_placement_parsed_data': f"s3://{BUCKET_NAME}/{config_data['site']}/placement/parsed_data",
+        's3_page_response_data': f"s3://{BUCKET_NAME}/{config_data['site']}/page/response_data",
+        's3_page_parsed_data': f"s3://{BUCKET_NAME}/{config_data['site']}/page/parsed_data",
     }
 
 def create_table_record(config_data):
@@ -48,16 +49,16 @@ def create_queue_sqs(queue_name):
 def creete_docker_image_parse(config_data):
     pass
 
-def create_docker_image_plugin(config_data):
+def create_docker_image_placement(config_data):
     pass
 
 def create_docker_image_crawler(config_data):
     pass
     
 if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser(description="Parase arguemtn for init_site script")
-    arg_parser.add_argument("--site_name")
-    args = arg_parser.parse_args()
+    arg_page = argparse.Argumentpage(description="Parase arguemtn for init_site script")
+    arg_page.add_argument("--site_name")
+    args = arg_page.parse_args()
     
     site_config = read_yaml(args.site_name)
 

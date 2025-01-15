@@ -26,12 +26,8 @@ class BaseParser(ABC):
     def __init__(self, parsed_site):
         self.parsed_site = parsed_site
     
-    # @abstractmethod
-    # def initialize_variables(self,):
-    #     pass
-    
     @abstractmethod
-    def parse(self, response_result):
+    def parse(self, response_result, url):
         return dict
     
     def process_result(self, result):
