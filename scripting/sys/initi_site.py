@@ -19,6 +19,18 @@ session = boto3.Session(
     region_name=AWS_REGION
 )
 
+sqs_client = session.client('sqs')
+
+sqs_attributes = {
+    'FifoQueue': 'true',
+    'ContentBasedDeduplication': 'true',
+    'DelaySeconds': '60',
+    'MaximumMessageSize': '262144',
+    'MessageRetentionPeriod': '86400',
+    'VisibilityTimeout': '60',
+    'ReceiveMessageWaitTimeSeconds': '0',
+}
+
 def create_s3_buckets(config_data):
     s3_client = session.client('s3')
     s3_client.put_object(Bucket=BUCKET_NAME, Key=f"{config_data['site']}/")
@@ -40,11 +52,12 @@ def create_s3_buckets(config_data):
 def create_table_record(config_data):
     site.Site.create(name=config_data['site'], url=config_data['seed_url'])
 
-def create_queue_parser(config_data):
-    pass
-
-def create_queue_plugin(config_data):
-    pass
+def create_queue_sqs(queue_name):
+    response = sqs_client.create_queue(
+        QueueName= f"{queue_name}.fifo",
+        Attributes=sqs_attributes
+    )
+    return response['QueueUrl']
 
 def creete_docker_image_parse(config_data):
     pass
