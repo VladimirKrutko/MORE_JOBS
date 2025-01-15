@@ -1,7 +1,7 @@
 from .base_methods import BaseMethods
 from scripting.parser.base_parser import *
 
-class PracujPLParser(BaseParser, BaseMethods):
+class Parser(BaseParser, BaseMethods):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
     WORKING_TIME = 8
     WORKING_DAYS = 20
@@ -55,13 +55,12 @@ class PracujPLParser(BaseParser, BaseMethods):
         location_result = set()
 
         for location in location_data:
-            match location_type:
-                case 'city':
-                    location_result.add(location['inlandLocation']['location']['name'])
-                case 'country':
-                    location_result.add(location['country']['name'])
-                case _:
-                    location_result.add(None)
+            if location_type == 'city':
+                location_result.add(location['inlandLocation']['location']['name'])
+            elif location_type == 'country':
+                location_result.add(location['country']['name'])
+            else:
+                location_result.add(None)
         return location_result
 
     def parse_offer_description(self):

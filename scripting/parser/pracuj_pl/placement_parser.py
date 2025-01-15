@@ -1,7 +1,7 @@
 from .base_methods import *
 from scripting.parser.base_parser import BaseParser
 
-class PracujPLPlacement(BaseParser, BaseMethods):
+class Parser(BaseParser, BaseMethods):
     
     def parse(self, response_result, url):
         self.initialize_variables(response_result, url)
