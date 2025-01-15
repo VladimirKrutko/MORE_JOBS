@@ -1,10 +1,11 @@
-from sqlalchemy import Column, Integer, String, TIMESTAMP
+from sqlalchemy import TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
+from scripting.loader.base_model import *
 
 Base = declarative_base()
 
-class LoaderLog(Base):
+class LoaderLog(Base, BaseModel):
     __tablename__ = 'loader_log'
 
     id = Column(Integer, primary_key=True, autoincrement=True)

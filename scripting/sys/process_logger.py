@@ -1,4 +1,4 @@
-from MORE_JOBS.scripting.loader.models import crawl_log, loader_log, parser_log
+from scripting.loader.models import crawl_log, loader_log, parser_log
 """
 This is a simple logger class that logs the data based on the process name.
 """

@@ -1,23 +1,9 @@
-
-import os
-import boto3
 import argparse
-from dotenv import load_dotenv
 from .reade_config import read_yaml
 from scripting.loader.models import site 
+from scripting.sys.aws_initialization import session
 
-load_dotenv()
-
-AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
 BUCKET_NAME = 'more-jobs'
-
-session = boto3.Session(
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    region_name=AWS_REGION
-)
 
 sqs_client = session.client('sqs')
 

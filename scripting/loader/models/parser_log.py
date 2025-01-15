@@ -1,10 +1,11 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
+from scripting.loader.base_model import *
+from sqlalchemy import TIMESTAMP
 from sqlalchemy.sql import func
 
 Base = declarative_base()
 
-class ParserLog(Base):
+class ParserLog(Base, BaseModel):
     __tablename__ = 'parser_log'
 
     id = Column(Integer, primary_key=True, autoincrement=True) 
