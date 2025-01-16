@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright
-from scripting.crawler import BaseLogin
+from scripting.login.base_login import BaseLogin
 
-class PlaywrightLogin(BaseLogin):
+class Login(BaseLogin):
     def login(self, proxy=None):
         with sync_playwright() as p:
             browser = p.chromium.launch(proxy={"server": proxy}, headless=False) if proxy else p.chromium.launch(headless=False)
