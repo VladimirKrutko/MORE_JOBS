@@ -4,4 +4,4 @@ class SiteData:
         self.__dict__.update(self.load_site_data(site))
 
     def load_site_data(self, site):
-        SITE_TABLE.get_item(Key={'site': site})['Item']
+        return SITE_TABLE.get_item(Key={'site': site})['Item']

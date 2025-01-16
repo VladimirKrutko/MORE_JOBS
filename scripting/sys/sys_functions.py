@@ -4,6 +4,7 @@ import json
 BACKET_NAME = "more-jobs"
 SQS_CLIENT = session.client('sqs')
 S3_CLIENT = session.client('s3')
+MESSAGE_GROUP = 'site_crawler'
 
 def listeting_sqs(queue_url):
     while True:

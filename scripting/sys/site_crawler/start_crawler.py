@@ -1,10 +1,11 @@
-from MORE_JOBS.scripting.sys.process_logger import Logger
-from MORE_JOBS.scripting.sys.aws_initialization import *
-from MORE_JOBS.scripting.sys.site_data import SiteData
-from MORE_JOBS.scripting.sys.sys_functions import *
+from scripting.sys.process_logger import Logger
+from scripting.sys.aws_initialization import *
+from scripting.sys.site_data import SiteData
+from scripting.sys.sys_functions import *
 import importlib
 import argparse
 import time
+import pdb
 
 """
 sqs crawler message format:
@@ -27,7 +28,7 @@ def log(site_data, sqs_message, log_message, response=None):
     )
 
 def process_response(site_data, response, message):
-    file_path = f"{getattr(site_data, f"s3_{message['mode']}_response_data")}/{message['id']}.html"
+    file_path = f"{s3_response_path(site_data, message)}/{message['id']}.html"
     S3_CLIENT.put_object(Bucket=BUCKET_NAME, Key=file_path, Body=response)
     SQS_CLIENT.delete_message(QueueUrl=site_data.sqs_crawler, ReceiptHandle=message['receipt_handle'])
     SQS_CLIENT.send_message(
@@ -41,10 +42,14 @@ def process_response(site_data, response, message):
         )
     )
 
+def s3_response_path(site_data, message):
+    return getattr(site_data, f's3_{message["mode"]}_response_data')
+
 def start_crawler(site_data, site_crawler, site_login):
     counter = 0
     login_data = site_login.login()
     while True:
+        pdb.set_trace()
         message = listeting_sqs(site_data.sqs_crawler)
         log(site_data, message, "start crawler")
         try:
@@ -70,20 +75,22 @@ def start_crawler(site_data, site_crawler, site_login):
 def get_site_crawler(site_data):
     module_path = ''
     if site_data.system_crawler is True:
-        module_path = "MORE_JOBS.scripting.shop_modules.system_crawler"
+        module_path = "scripting.shop_modules.system_crawler"
     else:
-        module_path = f"MORE_JOBS.scripting.shop_modules.{site_data.site_name}.crawler"
+        module_path = f"scripting.shop_modules.{site_data.site_name}.crawler"
     module = importlib.import_module(module_path)
-    return getattr(module, 'Cralwer')
+    return getattr(module, 'Crawler')
 
 def get_site_login(site_data):
-    return getattr(f"MORE_JOBS.scripting.shop_modules.{site_data.site_name}.login", 'Login')   
+    module =  importlib.import_module(f"scripting.shop_modules.{site_data.site}.login")
+    return getattr(module, 'Login')   
 
 if __name__ == "__main__":
-    arg_page = argparse.Argumentpage(description="Parase arguemtn for init_site script")
+    arg_page = argparse.ArgumentParser(description="Parase arguemtn for init_site script")
     arg_page.add_argument("--site_name")
     args = arg_page.parse_args()
     site_data = SiteData(args.site_name)
     site_crawler = get_site_crawler(site_data)()
+    pdb.set_trace()
     site_login = get_site_login(site_data)()
     start_crawler(site_data, site_crawler, site_login)

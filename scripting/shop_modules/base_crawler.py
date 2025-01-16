@@ -12,13 +12,6 @@ class BaseCrawler(ABC):
             instance = super(BaseCrawler, cls).__new__(cls)
             cls._instances[http_method] = instance
         return cls._instances[http_method]
-
-    @abstractmethod
-    def to_recrwale(self, responce_result):
-        """
-        Conditition for check responce reslut 
-        """
-        pass
     
     @abstractmethod
     def crawl(self, task):
