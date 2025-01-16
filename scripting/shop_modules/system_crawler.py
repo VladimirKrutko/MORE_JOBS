@@ -1,8 +1,8 @@
 import requests
 from datetime import datetime
-from base_crawler import BaseCrawler
+from scripting.shop_modules.base_crawler import BaseCrawler
 
-class BaseCrawler(BaseCrawler):
+class Crawler(BaseCrawler):
     def __init__(self, http_method='GET'):
         self.http_method = http_method
     
@@ -17,9 +17,9 @@ class BaseCrawler(BaseCrawler):
             print(f"Failed to fetch {url}: {e}")
             return None
 
-    def crawl(self, url, http_method='GET', post_body=None):
+    def crawl(self, url, http_method='GET',headers=None ,cookies=None, proxy=None, post_body=None):
         print(f"Start Crawling: {url} at {datetime.now()}")
-        html_content, status_code, headers = self.fetch(url, http_method, post_body)
+        html_content, status_code, headers = self.fetch(url, http_method, headers, cookies,proxy, post_body)
         print(f"Done Crawling: {url} at {datetime.now()} {status_code}")
         return html_content, status_code, headers
 

@@ -1,10 +1,11 @@
 from playwright.sync_api import sync_playwright
-from base_login import BaseLogin
+from MORE_JOBS.scripting.shop_modules.base_login import BaseLogin
+import pdb
 
-class PlaywrightLogin(BaseLogin):
+class Login(BaseLogin):
     def login(self, proxy=None):
         with sync_playwright() as p:
-            browser = p.chromium.launch(proxy={"server": proxy}, headless=False) if proxy else p.chromium.launch(headless=False)
+            browser = p.chromium.launch(proxy={"server": proxy}, headless=True) if proxy else p.chromium.launch(headless=False)
             context = browser.new_context()
             page = context.new_page()
             login_url = "https://it.pracuj.pl/praca"
@@ -16,6 +17,6 @@ class PlaywrightLogin(BaseLogin):
             browser.close()
             return {
                 "proxy": proxy,
-                "cookies": cookies,
+                "cookies": self.process_cookies(cookies),
                 "user_agent": user_agent
             }

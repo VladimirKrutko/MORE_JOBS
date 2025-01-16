@@ -1,5 +1,5 @@
 from .base_methods import BaseMethods
-from scripting.parser.base_parser import *
+from scripting.shop_modules.base_parser import *
 
 class Parser(BaseParser, BaseMethods):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"

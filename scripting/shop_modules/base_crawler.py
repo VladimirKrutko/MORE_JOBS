@@ -26,3 +26,4 @@ class BaseCrawler(ABC):
         Base method that should be realize in all creawlers
         """
         pass
+    

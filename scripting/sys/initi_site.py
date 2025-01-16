@@ -1,5 +1,4 @@
 import argparse
-from .reade_config import read_yaml
 from scripting.loader.models import site 
 from scripting.sys.aws_initialization import session
 
@@ -60,7 +59,7 @@ if __name__ == "__main__":
     arg_page.add_argument("--site_name")
     args = arg_page.parse_args()
     
-    site_config = read_yaml(args.site_name)
+    # site_config = read_yaml(args.site_name)
 
     
     
