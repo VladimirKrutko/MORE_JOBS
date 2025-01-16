@@ -1,6 +1,6 @@
 import argparse
 from scripting.loader.models import site 
-from scripting.sys.aws_initialization import session
+from scripting.sys.aws_initialization import *
 
 BUCKET_NAME = 'more-jobs'
 

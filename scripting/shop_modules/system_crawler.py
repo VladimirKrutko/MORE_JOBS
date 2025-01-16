@@ -19,7 +19,11 @@ class Crawler(BaseCrawler):
 
     def crawl(self, url, http_method='GET',headers=None ,cookies=None, proxy=None, post_body=None):
         print(f"Start Crawling: {url} at {datetime.now()}")
-        html_content, status_code, headers = self.fetch(url, http_method, headers, cookies,proxy, post_body)
+        html_content, status_code, headers = self.fetch(url, http_method, headers, cookies, proxy, post_body)
         print(f"Done Crawling: {url} at {datetime.now()} {status_code}")
-        return html_content, status_code, headers
+        return {
+            'content': html_content,
+            'status': status_code,
+            'headers': headers
+        }
 
