@@ -91,6 +91,5 @@ if __name__ == "__main__":
     args = arg_page.parse_args()
     site_data = SiteData(args.site_name)
     site_crawler = get_site_crawler(site_data)()
-    pdb.set_trace()
     site_login = get_site_login(site_data)()
     start_crawler(site_data, site_crawler, site_login)
