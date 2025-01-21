@@ -15,7 +15,7 @@ sqs_attributes = {
     'DelaySeconds': '60',
     'MaximumMessageSize': '262144',
     'MessageRetentionPeriod': '86400',
-    'VisibilityTimeout': '60',
+    'VisibilityTimeout': '240',
     'ReceiveMessageWaitTimeSeconds': '0',
 }
 

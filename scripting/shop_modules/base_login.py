@@ -10,4 +10,5 @@ class BaseLogin(ABC):
         }
     
     def process_cookies(self, cookies):
-        return "; ".join([f"{cook['name']}={cook['value']}" for cook in cookies])
+        return {cookie['name']: cookie['value'] for cookie in cookies }
+        # return "; ".join([f"{cook['name']}={cook['value']}" for cook in cookies])

@@ -6,6 +6,7 @@ import json
 
 class SiteParser:
     def __init__(self, site, parser_import_path, mode):
+        configure_logging()
         self.parser_import_path = parser_import_path
         self.site_data = SiteData(site)
         self.parser = self.parser_object(site)
@@ -20,6 +21,7 @@ class SiteParser:
     def parse(self):
         while True:
             message_data = listeting_sqs(self.get_queu_url())
+            logging.info(f"Parse s3 file: {message_data['message']['s3_path']}")
             page_content = self.get_s3_content(message_data['message']['s3_path'])
             parsed_data = self.parser.parse(page_content, message_data['message']['url'])
             parsed_data['site'] = self.site_data.site

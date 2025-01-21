@@ -1,6 +1,6 @@
 from .base_methods import *
-from scripting.parser.base_parser import BaseParser
-
+from MORE_JOBS.scripting.shop_modules.base_parser import BaseParser
+import re
 class Parser(BaseParser, BaseMethods):
     
     def parse(self, response_result, url):

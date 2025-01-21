@@ -1,6 +1,7 @@
-import requests
-from datetime import datetime
 from scripting.shop_modules.base_crawler import BaseCrawler
+from datetime import datetime
+import requests
+
 
 class Crawler(BaseCrawler):
     def __init__(self, http_method='GET'):
