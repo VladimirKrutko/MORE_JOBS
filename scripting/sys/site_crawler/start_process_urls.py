@@ -69,9 +69,6 @@ def start_crawler(site_data, site_crawler, site_login):
             login_data = site_login.login()
         counter += 1
 
-
-        
-        
 def get_site_crawler(site_data):
     module_path = ''
     if site_data.system_crawler is True:
