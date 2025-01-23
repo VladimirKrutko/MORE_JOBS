@@ -16,10 +16,8 @@ sqs crawler message format:
     "mode: "page" or "placement"
 }
 """
-# data = {"url": "http://example.com/page1","file": 'test', "site": "example.com", "status": "200", "message": "Success"}
 
 def log(site_data, sqs_message, log_message, response=None):
-    pdb.set_trace()
     Logger.log(
         process_name="crawl",
         site=site_data.site,
@@ -31,11 +29,8 @@ def log(site_data, sqs_message, log_message, response=None):
 
 def process_response(site_data, response, message):
     file_path = os.path.join(s3_response_path(site_data, message), f"{message['message_id']}.html")
-    put_s3_object(response, file_path)
-    # S3_CLIENT.put_object(Bucket=BUCKET_NAME, Key=file_path, Body=response)
-    # SQS_CLIENT.delete_message(QueueUrl=site_data.sqs_crawler, ReceiptHandle=message['message_receipt_handle'])
+    put_s3_object(response, file_path, site_data.s3_placement_response_data)
     delete_message_from_sqs(site_data.sqs_crawler, message['message_receipt_handle'])
-    logging.info(f"Send message to SQS parser: {site_data.sqs_parser}")
     message = {
             "site": site_data.site,
             "url": message['message']['url'],
@@ -43,16 +38,6 @@ def process_response(site_data, response, message):
             "s3_path": file_path,
             }
     send_message_to_sqs(site_data.sqs_parser, str(message))
-    # SQS_CLIENT.send_message(
-    #     QueueUrl=site_data.sqs_parser,
-    #     MessageBody=str({
-    #         "site": site_data.site,
-    #         "url": message['message']['url'],
-    #         "mode": message['message']['mode'],
-    #         "s3_path": file_path,
-    #         }),
-    #     MessageGroupId=MESSAGE_GROUP,
-    #     )
 
 def s3_response_path(site_data, message):
     return getattr(site_data, f's3_{message["message"]["mode"]}_response_data')
@@ -77,6 +62,7 @@ def start_crawler(site_data, site_crawler, site_login):
             process_response(site_data, response['content'], message)
         except Exception as e:
             response['status'] = 0
+            logging.error(f"Error on process page {message['message']['url']} {str(e)}")
             log(site_data, message, str(e), response)
             continue
         if counter % site_data.relogin_interval == 0:
