@@ -31,6 +31,10 @@ def put_s3_object(data, file_name, base_path):
     logging.info("Put object to S3: %s", s3_path)
     return s3_path
 
+def read_s3_object(s3_path):
+    response = S3_CLIENT.get_object(Bucket=BACKET_NAME, Key=s3_path)
+    return response['Body'].read().decode('utf-8')
+
 def listeting_sqs(queue_url):
     while True:
         logging.info("Listening to SQS queue: %s", queue_url)
