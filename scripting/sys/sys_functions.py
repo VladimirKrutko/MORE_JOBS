@@ -1,4 +1,4 @@
-from scripting.sys.aws_initialization import session
+from scripting.sys.aws_variables import session
 import logging
 import json
 

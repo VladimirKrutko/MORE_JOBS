@@ -1,12 +1,11 @@
 from scripting.sys.process_logger import Logger
-from scripting.sys.aws_initialization import *
+from scripting.sys.aws_variables import *
 from scripting.sys.site_data import SiteData
 from scripting.sys.sys_functions import *
 import importlib
 import argparse
 import time
 import os
-import pdb
 
 """
 sqs crawler message format:
