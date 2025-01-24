@@ -3,7 +3,7 @@ from scripting.loader.models import crawl_log, loader_log, parser_log
 This is a simple logger class that logs the data based on the process name.
 """
 class Logger:
-
+    
     @staticmethod
     def log(**kwargs):
         process_name = kwargs.pop('process_name', None)

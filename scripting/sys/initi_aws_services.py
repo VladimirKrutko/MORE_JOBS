@@ -1,6 +1,6 @@
-from scripting.sys.aws_initialization import *
+from scripting.sys.aws_variables import *
 from scripting.sys.sys_functions import *
-from scripting.loader.models import site 
+from scripting.loader.models import site
 import argparse
 import json
 """

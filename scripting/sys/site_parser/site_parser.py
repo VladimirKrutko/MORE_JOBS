@@ -1,29 +1,30 @@
-from scripting.sys.process_logger import ProcessLogger
+from scripting.sys.process_logger import Logger
 from scripting.sys.site_data import SiteData
-from MORE_JOBS.scripting.sys.sys_functions import *
+from scripting.sys.sys_functions import *
 import importlib
-import json
+import pdb
 
 class SiteParser:
-    def __init__(self, site, parser_import_path, mode):
+    def __init__(self, site, mode):
         configure_logging()
-        self.parser_import_path = parser_import_path
         self.site_data = SiteData(site)
-        self.parser = self.parser_object(site)
-        self.logger = ProcessLogger('parser')
         self.is_placement = mode == 'placement'
+        self.parser = self.get_parser_classs()
         self.listening_queue = self.site_data.placement_parser_queue if self.is_placement else self.site_data.page_parser_queue
 
-    def parser_object(self, site):
-        parser_module = importlib.import_module(self.parser_import_path)
-        return getattr(parser_module, 'Parser')(site)
+    def get_parser_classs(self):
+        parser_file = 'placement_parser' if self.is_placement else 'page_parser'
+        parser_module = importlib.import_module(f"scripting.site_modules.{self.site_data.site}.{parser_file}")
+        return getattr(parser_module, 'Parser')(self.site_data.site)
     
     def parse(self):
         while True:
+            pdb.set_trace()
             message_data = listeting_sqs(self.get_queu_url())
             # listeting_sqs(self.get_queu_url())
             logging.info(f"Parse s3 file: {message_data['message']['s3_path']}")
             page_content = read_s3_object(message_data['message']['s3_path'])
+            Logger.log()
             # self.get_s3_content(message_data['message']['s3_path'])
             parsed_data = self.parser.parse(page_content, message_data['message']['url'])
             parsed_data['site'] = self.site_data.site
@@ -37,10 +38,11 @@ class SiteParser:
             #     QueueUrl= self.site_data.sqs_placement_loader if self.is_placement else self.site_data.sqs_page_loader,
             #     MessageBody=json.dumps({'s3_path': s3_loder_path}),
             #     )
-            SQS_CLIENT.delete_message(
-                QueueUrl=self.listening_queue,
-                ReceiptHandle=message_data['message_receipt_handle']
-            )
+            delete_message_from_sqs(self.get_queu_url(), message_data['message_receipt_handle'])
+            # SQS_CLIENT.delete_message(
+            #     QueueUrl=self.listening_queue,
+            #     ReceiptHandle=message_data['message_receipt_handle']
+            # )
 
     # def put_s3_object(self, data, file_name):
     #     s3_path = f"{base_path}/{file_name}.json"
