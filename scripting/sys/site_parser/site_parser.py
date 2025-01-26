@@ -1,8 +1,6 @@
-from scripting.sys.process_logger import Logger
 from scripting.sys.site_data import SiteData
 from scripting.sys.sys_functions import *
 import importlib
-import pdb
 import os
 
 class SiteParser:
