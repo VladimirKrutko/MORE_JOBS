@@ -62,7 +62,7 @@ if __name__ == "__main__":
     config_data.update(create_s3_buckets(config_data))
     config_data['sqs_crawler'] = create_queue_sqs(f"{args.site_name}_crawler")
     config_data['sqs_parser'] = create_queue_sqs(f"{args.site_name}_parser")
-    config_data['sqs_plugin_loader'] = create_queue_sqs(f"{args.site_name}_plugin_loader")
-    config_data['sqs_page_loader'] = create_queue_sqs(f"{args.site_name}_loader")
+    config_data['sqs_plugin_loader'] = PLACEMENT_LOADER_SQS
+    config_data['sqs_page_loader'] = PLACEMENT_LOADER_SQS
     create_table_record(config_data)
     put_site_config_ddb(config_data)
