@@ -1,7 +1,8 @@
 from scripting.sys.aws_variables import *
 import logging
 import json
-import pdb
+import sys
+import re
 
 def configure_logging():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -33,6 +34,16 @@ def put_s3_object(data, file_path):
 def read_s3_object(s3_path):
     response = S3_CLIENT.get_object(Bucket=BUCKET_NAME, Key=s3_path)
     return response['Body'].read().decode('utf-8')
+
+def replace_punctuations(text):
+    return re.sub(r'[^\w\s]', '_', text)
+
+def create_file_name_from_url(url):
+    return  replace_punctuations(url.replace('https://', ''))
+
+def signal_handler(sig, frame):
+    logging.info("Stop process")
+    sys.exit(0)
 
 def listeting_sqs(queue_url):
     while True:

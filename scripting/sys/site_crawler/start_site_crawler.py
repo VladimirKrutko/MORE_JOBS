@@ -4,9 +4,9 @@ from scripting.sys.aws_variables import *
 from scripting.sys.sys_functions import *
 import importlib
 import argparse
+import signal
 import time
 import os
-import pdb
 
 """
 sqs crawler message format:
@@ -16,6 +16,8 @@ sqs crawler message format:
     "mode: "page" or "placement"
 }
 """
+
+signal.signal(signal.SIGINT, signal_handler)
 
 def log(site_data, sqs_message, log_message, response=None):
     Logger.log(

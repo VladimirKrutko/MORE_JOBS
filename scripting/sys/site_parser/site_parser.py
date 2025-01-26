@@ -3,6 +3,7 @@ from scripting.sys.site_data import SiteData
 from scripting.sys.sys_functions import *
 import importlib
 import pdb
+import os
 
 class SiteParser:
     def __init__(self, site, mode):
@@ -20,7 +21,6 @@ class SiteParser:
     
     def parse(self):
         while True:
-            pdb.set_trace()
             message_data = listeting_sqs(self.site_data.sqs_parser)
             if message_data['message']['mode'] != self.mode:
                 continue
@@ -28,7 +28,10 @@ class SiteParser:
             page_content = read_s3_object(message_data['message']['s3_path'])
             parsed_data = self.parser.parse(page_content, message_data['message']['url'])
             parsed_data['site'] = self.site_data.site
+            parsed_data['url'] = message_data['message']['url']
             base_path = self.site_data.s3_placement_parsed_data if self.is_placement else self.site_data.s3_page_parsed_data
-            s3_loder_path = put_s3_object(parsed_data, message_data['message_id'], base_path)
-            send_message_to_sqs(self.site_data.sqs_placement_loader if self.is_placement else self.site_data.sqs_page_loader, str({'s3_path': s3_loder_path}))
+            file_path = os.path.join(base_path, f"{create_file_name_from_url(message_data['message']['url'])}.json")
+            s3_loder_path = put_s3_object(parsed_data, file_path)
+            sqs_url = self.site_data.sqs_plugin_loader if self.is_placement else self.site_data.sqs_page_loader
+            send_message_to_sqs(sqs_url, str({'s3_path': s3_loder_path}))
             delete_message_from_sqs(self.site_data.sqs_parser, message_data['message_receipt_handle'])
