@@ -1,11 +1,12 @@
 from scripting.sys.process_logger import Logger
-from scripting.sys.aws_variables import *
 from scripting.sys.site_data import SiteData
+from scripting.sys.aws_variables import *
 from scripting.sys.sys_functions import *
 import importlib
 import argparse
 import time
 import os
+import pdb
 
 """
 sqs crawler message format:
@@ -28,7 +29,7 @@ def log(site_data, sqs_message, log_message, response=None):
 
 def process_response(site_data, response, message):
     file_path = os.path.join(s3_response_path(site_data, message), f"{message['message_id']}.html")
-    put_s3_object(response, file_path, site_data.s3_placement_response_data)
+    put_s3_object(response, file_path)
     delete_message_from_sqs(site_data.sqs_crawler, message['message_receipt_handle'])
     message = {
             "site": site_data.site,

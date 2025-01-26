@@ -1,4 +1,4 @@
-from scripting.parser.base_parser import *
+from scripting.shop_modules.base_parser import *
 
 class BaseMethods:
     def initialize_variables(self, page_content, url):
@@ -12,3 +12,7 @@ class BaseMethods:
     @staticmethod
     def squish(text):
         return re.sub(r'\s+', ' ', text).strip()
+    
+    @staticmethod
+    def find_re_matches(pattern, text):
+        return re.findall(pattern, text)

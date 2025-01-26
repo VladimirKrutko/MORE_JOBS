@@ -1,8 +1,10 @@
-from .base_methods import *
-from MORE_JOBS.scripting.shop_modules.base_parser import BaseParser
+from scripting.shop_modules.pracuj_pl.base_methods import *
+from scripting.shop_modules.base_parser import BaseParser
 import re
+
 class Parser(BaseParser, BaseMethods):
-    
+    URL_PATTERN = r'\\(.+?)\\'
+
     def parse(self, response_result, url):
         self.initialize_variables(response_result, url)
         return self.create_result()
@@ -14,8 +16,8 @@ class Parser(BaseParser, BaseMethods):
             }
 
     def parse_offer_urls(self):
-        links = self.doc.find_all("a", attrs={"data-test": re.compile(r"^link-offer$")})
-        return [link['href'] for link in links]
+        links = self.doc.find_all("a", attrs={"data-test": re.compile(r".*link-offer.*")})
+        return [self.find_re_matches(self.URL_PATTERN, link['href'])[0].replace('"', '') for link in links]
     
     def pagination(self):
         page_number = self.get_page_number()

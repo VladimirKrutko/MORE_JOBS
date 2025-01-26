@@ -1,11 +1,11 @@
-from scripting.sys.aws_variables import session
+from scripting.sys.aws_variables import *
 import logging
 import json
+import pdb
 
 def configure_logging():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-BACKET_NAME = "more-jobs"
 SQS_CLIENT = session.client('sqs')
 S3_CLIENT = session.client('s3')
 MESSAGE_GROUP = 'site_crawler'
@@ -25,14 +25,13 @@ def delete_message_from_sqs(queue_url, receipt_handle):
     )
     logging.info("Delete message from SQS: %s", receipt_handle)
 
-def put_s3_object(data, file_name, base_path):
-    s3_path = f"{base_path}/{file_name}.json"
-    S3_CLIENT.put_object(Bucket=BACKET_NAME, Key=s3_path, Body=json.dumps(data))
-    logging.info("Put object to S3: %s", s3_path)
-    return s3_path
+def put_s3_object(data, file_path):
+    S3_CLIENT.put_object(Bucket=BUCKET_NAME, Key=file_path, Body=json.dumps(data))
+    logging.info("Put object to S3: %s", file_path)
+    return file_path
 
 def read_s3_object(s3_path):
-    response = S3_CLIENT.get_object(Bucket=BACKET_NAME, Key=s3_path)
+    response = S3_CLIENT.get_object(Bucket=BUCKET_NAME, Key=s3_path)
     return response['Body'].read().decode('utf-8')
 
 def listeting_sqs(queue_url):

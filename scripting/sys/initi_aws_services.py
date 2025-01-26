@@ -1,6 +1,6 @@
 from scripting.sys.aws_variables import *
 from scripting.sys.sys_functions import *
-from scripting.loader.models import site
+from scripting.loader.models import site 
 import argparse
 import json
 """
@@ -48,7 +48,7 @@ def create_queue_sqs(queue_name):
     return response['QueueUrl']
 
 def reaed_config_file(site_name):
-    with open(f"./scripting/site_configurations/{site_name}.json", "r") as file:
+    with open(f"MORE_JOBS/scripting/site_configurations/{site_name}.json", "r") as file:
         return json.load(file)
     
 def put_site_config_ddb(config_data):
@@ -64,5 +64,5 @@ if __name__ == "__main__":
     config_data['sqs_parser'] = create_queue_sqs(f"{args.site_name}_parser")
     config_data['sqs_plugin_loader'] = create_queue_sqs(f"{args.site_name}_plugin_loader")
     config_data['sqs_page_loader'] = create_queue_sqs(f"{args.site_name}_loader")
-    # create_table_record(config_data)
+    create_table_record(config_data)
     put_site_config_ddb(config_data)
