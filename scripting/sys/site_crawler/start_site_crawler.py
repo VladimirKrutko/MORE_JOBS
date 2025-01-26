@@ -55,14 +55,17 @@ def start_crawler(site_data, site_crawler, site_login):
             time.sleep(int(site_data.crawler_delay))
             response = site_crawler.crawl(url=message['message']['url'], headers=login_data['headers'], cookies=login_data['cookies'])
             if response['status'] == 200:
+                upate_page_status(message['message']['url'], URL_STATUS['downloaded'])
                 logging.info(f"Success response from {message['message']['url']}")
                 log(site_data, message, "success", response)
             else:
+                upate_page_status(message['message']['url'], URL_STATUS['error'])
                 logging.error(f"Failed response from {message['message']['url']}")
                 log(site_data, message, "failed", response)
                 continue
             process_response(site_data, response['content'], message)
         except Exception as e:
+            upate_page_status(message['message']['url'], URL_STATUS['error'])
             response['status'] = 0
             logging.error(f"Error on process page {message['message']['url']} {str(e)}")
             log(site_data, message, str(e), response)

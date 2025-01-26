@@ -25,6 +25,7 @@ class SiteParser:
             logging.info(f"Parse s3 file: {message_data['message']['s3_path']}")
             page_content = read_s3_object(message_data['message']['s3_path'])
             parsed_data = self.parser.parse(page_content, message_data['message']['url'])
+            upate_page_status(message_data['message']['url'], URL_STATUS['parsed'])
             parsed_data['site'] = self.site_data.site
             parsed_data['url'] = message_data['message']['url']
             base_path = self.site_data.s3_placement_parsed_data if self.is_placement else self.site_data.s3_page_parsed_data

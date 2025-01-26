@@ -1,15 +1,25 @@
 from scripting.sys.aws_variables import *
+from scripting.loader.models.page_status import PageStatus
 import logging
 import json
 import sys
 import re
 
-def configure_logging():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
 SQS_CLIENT = session.client('sqs')
 S3_CLIENT = session.client('s3')
 MESSAGE_GROUP = 'site_crawler'
+URL_STATUS = {
+    'downloaded': 'downloaded',
+    'error': 'error',
+    'parsed': 'parsed',
+    'saved': 'saved',
+}
+
+def upate_page_status(url, status):
+    PageStatus.add_or_update_page_status(url, status)
+
+def configure_logging():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def send_message_to_sqs(queue_url, message):
     SQS_CLIENT.send_message(

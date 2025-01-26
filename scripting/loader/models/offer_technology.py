@@ -1,5 +1,5 @@
-from models.offer import Offer
-from models.technology import Technology
+from scripting.loader.models.technology import Technology
+from scripting.loader.models.offer import Offer
 from scripting.loader.base_model import *
 
 
