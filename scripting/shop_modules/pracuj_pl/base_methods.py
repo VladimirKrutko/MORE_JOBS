@@ -16,3 +16,4 @@ class BaseMethods:
     @staticmethod
     def find_re_matches(pattern, text):
         return re.findall(pattern, text)
+    

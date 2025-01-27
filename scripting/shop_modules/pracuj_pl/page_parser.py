@@ -1,5 +1,7 @@
-from .base_methods import BaseMethods
 from scripting.shop_modules.base_parser import *
+from .base_methods import BaseMethods
+from json_repair import repair_json
+import pdb
 
 class Parser(BaseParser, BaseMethods):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
@@ -65,7 +67,7 @@ class Parser(BaseParser, BaseMethods):
 
     def parse_offer_description(self):
         desc_section = self.find_section(self.get_json_value(self.page_json, self.JSON_PATHS['company_description']), 'about-project')
-        return self.squish(" ".join(desc_section['model']['paragraphs']))
+        return self.squish(" ".join(desc_section['model']['paragraphs'])) if desc_section else None
     
     def parse_salary(self):
         salary_data = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
@@ -116,11 +118,11 @@ class Parser(BaseParser, BaseMethods):
         return self.squish(" ".join(description_section['model']['paragraphs'])) if description_section else None
 
     def find_section(self, section_list, section_name):
-        return next((section for section in section_list if section['sectionType'] == section_name), None)
+        return next((section for section in section_list if section['sectionType'] == section_name or section['sectionType'] == f"{section_name}\""), None)
 
     def extract_json(self):
-        json_text = self.doc.find('script', id='__NEXT_DATA__').string
-        return json.loads(json_text.replace("'", '"').replace('undefined', '"undefined"'))
+        json_text = self.doc.find("script", attrs={"id": re.compile(r".*__NEXT_DATA__.*")}).string        
+        return json.loads(re.sub(r'(\\"":)', '":', repair_json(json_text)))[0]
     
     def get_json_value(self, json_obj, json_path, key_index=0):
         try:
