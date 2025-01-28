@@ -32,6 +32,7 @@ class SiteParser:
                 message_data['message']['step'] = 'parsing'
                 send_message_to_sqs(SQS_ERORR, str(message_data['message']))
                 upate_page_status(message_data['message']['url'], URL_STATUS['error'])
+                delete_message_from_sqs(self.listening_queue, message_data['message_receipt_handle'])
                 continue
             parsed_data['site'] = self.site_data.site
             parsed_data['url'] = message_data['message']['url']
