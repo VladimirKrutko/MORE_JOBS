@@ -22,11 +22,17 @@ def configure_logging():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def send_message_to_sqs(queue_url, message):
-    SQS_CLIENT.send_message(
-        QueueUrl=queue_url,
-        MessageBody=message,
-        MessageGroupId= MESSAGE_GROUP,
-    )
+    if '.fifo' in queue_url:
+        SQS_CLIENT.send_message(
+            QueueUrl=queue_url,
+            MessageBody=message,
+            MessageGroupId= MESSAGE_GROUP,
+        )
+    else:
+        SQS_CLIENT.send_message(
+            QueueUrl=queue_url,
+            MessageBody=message,
+        )
     logging.info("Send message to SQS: %s", queue_url)
 
 def delete_message_from_sqs(queue_url, receipt_handle):
@@ -36,8 +42,8 @@ def delete_message_from_sqs(queue_url, receipt_handle):
     )
     logging.info("Delete message from SQS: %s", receipt_handle)
 
-def put_s3_object(data, file_path):
-    S3_CLIENT.put_object(Bucket=BUCKET_NAME, Key=file_path, Body=json.dumps(data))
+def put_s3_object(data, file_path, content_type='text/html'  ):
+    S3_CLIENT.put_object(Bucket=BUCKET_NAME, Key=file_path, Body=data, ContentType=content_type)
     logging.info("Put object to S3: %s", file_path)
     return file_path
 
@@ -62,7 +68,7 @@ def listeting_sqs(queue_url):
             QueueUrl= queue_url,
             MaxNumberOfMessages= 1,
             VisibilityTimeout= 200,
-            WaitTimeSeconds= 2,
+            WaitTimeSeconds= 1,
         )
 
         if 'Messages' in response:

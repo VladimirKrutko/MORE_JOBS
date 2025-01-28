@@ -32,31 +32,32 @@ class Parser(BaseParser, BaseMethods):
         return self.process_result(result)
 
     def parse_offer_data(self, result):
-        result.update({
-            'url': self.url,
-            'company_name': self.get_json_value(self.page_json, self.JSON_PATHS['company_name']),
-            'company_description': self.parse_company_description(),
-            'offer_title': self.get_json_value(self.page_json, self.JSON_PATHS['offer_title']),
-            'position_level': self.get_json_value(self.page_json, self.JSON_PATHS['position_level']),
-            'technology_list': self.parse_technology_list(),
-            'offer_description': self.parse_offer_description(),
-            'requirements': self.parse_rr_section('requirements'),
-            'responsibilities': self.parse_rr_section('responsibilities'),
-            'language': self.get_json_value(self.page_json, self.JSON_PATHS['language']),
-            'salary': self.parse_salary(),
-            'work_type': self.parse_work_type(),
-            'city': list(self.parse_location('city')),
-            'country': list(self.parse_location('country')),
-        })
+        result['url'] = self.url
+        result['company_name'] = self.get_json_value(self.page_json, self.JSON_PATHS['company_name'])
+        result['company_description'] = self.parse_company_description()
+        result['offer_title'] = self.get_json_value(self.page_json, self.JSON_PATHS['offer_title'])
+        result['position_level'] = self.get_json_value(self.page_json, self.JSON_PATHS['position_level'])
+        result['technology_list'] = self.parse_technology_list()
+        result['offer_description'] = self.parse_offer_description()
+        result['requirements'] = self.parse_rr_section('requirements')
+        result['responsibilities'] = self.parse_rr_section('responsibilities')
+        result['language'] = self.get_json_value(self.page_json, self.JSON_PATHS['language'])
+        result['salary'] = self.parse_salary()
+        result['work_type'] = self.parse_work_type()
+        result['city'] = list(self.parse_location('city'))
+        result['country'] = list(self.parse_location('country'))
+        return result
 
     def parse_work_type(self):
         work_type = self.get_json_value(self.page_json, self.JSON_PATHS['work_type'])
-        return [wt['code'] for wt in work_type] if work_type else None
+        try:
+            return [wt['code'] for wt in work_type] if work_type else None
+        except:
+            return [wt['code'] for wt in work_type['applying']['workModes']] if work_type else None
 
     def parse_location(self, location_type):
         location_data = self.get_json_value(self.page_json, self.JSON_PATHS['location'])
         location_result = set()
-
         for location in location_data:
             if location_type == 'city':
                 location_result.add(location['inlandLocation']['location']['name'])
@@ -72,6 +73,7 @@ class Parser(BaseParser, BaseMethods):
     
     def parse_salary(self):
         salary_data = self.get_json_value(self.page_json, self.JSON_PATHS['salary'])
+
         if salary_data[0]['salary'] is None:
             return '-'
 
@@ -126,13 +128,7 @@ class Parser(BaseParser, BaseMethods):
 
     def extract_json(self):
         json_text = self.doc.find("script", attrs={"id": re.compile(r".*__NEXT_DATA__.*")}).string        
-        return json.loads(re.sub(r'(\\"":)', '":', repair_json(json_text)))[0]
-    
-    # def get_json_value(self, json_obj, json_path, key_index=0):
-    #     try:
-    #         return self.get_json_value(json_obj[json_path[key_index]], json_path, key_index + 1)
-    #     except (IndexError, KeyError, TypeError):
-    #         return json_obj
+        return json.loads(repair_json(json_text))
 
     def get_json_value(self, json_obj, json_path):
         for key in json_path:

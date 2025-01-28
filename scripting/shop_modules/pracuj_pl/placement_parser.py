@@ -17,7 +17,7 @@ class Parser(BaseParser, BaseMethods):
 
     def parse_offer_urls(self):
         links = self.doc.find_all("a", attrs={"data-test": re.compile(r".*link-offer.*")})
-        return [self.find_re_matches(self.URL_PATTERN, link['href'])[0].replace('"', '') for link in links]
+        return [link.get("href") for link in links]
     
     def pagination(self):
         page_number = self.get_page_number()

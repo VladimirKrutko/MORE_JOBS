@@ -12,9 +12,9 @@ sqs_client = session.client('sqs')
 sqs_attributes = {
     'FifoQueue': 'true',
     'ContentBasedDeduplication': 'true',
-    'DelaySeconds': '60',
+    'DelaySeconds': '0',
     'MaximumMessageSize': '262144',
-    'MessageRetentionPeriod': '86400',
+    'MessageRetentionPeriod': '345600',
     'VisibilityTimeout': '240',
     'ReceiveMessageWaitTimeSeconds': '0',
 }
@@ -61,8 +61,9 @@ if __name__ == "__main__":
     config_data = reaed_config_file(args.site_name)
     config_data.update(create_s3_buckets(config_data))
     config_data['sqs_crawler'] = create_queue_sqs(f"{args.site_name}_crawler")
-    config_data['sqs_parser'] = create_queue_sqs(f"{args.site_name}_parser")
+    config_data['sqs_page_parser'] = create_queue_sqs(f"{args.site_name}_page_parser")
+    config_data['sqs_placement_parser'] = create_queue_sqs(f"{args.site_name}_placement_parser")
     config_data['sqs_plugin_loader'] = PLACEMENT_LOADER_SQS
-    config_data['sqs_page_loader'] = PLACEMENT_LOADER_SQS
+    config_data['sqs_page_loader'] = PAGE_LOADER_SQS
     create_table_record(config_data)
     put_site_config_ddb(config_data)

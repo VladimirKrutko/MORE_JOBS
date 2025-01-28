@@ -39,7 +39,8 @@ def process_response(site_data, response, message):
             "mode": message['message']['mode'],
             "s3_path": file_path,
             }
-    send_message_to_sqs(site_data.sqs_parser, str(message))
+    sqs_url = site_data.sqs_placement_parser if message['mode'] == 'placement' else site_data.sqs_page_parser
+    send_message_to_sqs(sqs_url, str(message))
 
 def s3_response_path(site_data, message):
     return getattr(site_data, f's3_{message["message"]["mode"]}_response_data')
