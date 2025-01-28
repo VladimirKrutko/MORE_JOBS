@@ -1,8 +1,8 @@
 from scripting.shop_modules.base_parser import *
 from .base_methods import BaseMethods
 from json_repair import repair_json
+import sys
 import pdb
-
 class Parser(BaseParser, BaseMethods):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
     WORKING_TIME = 8
@@ -25,6 +25,7 @@ class Parser(BaseParser, BaseMethods):
         super().__init__(parsed_site)
 
     def parse(self, page_content, url):
+        sys.setrecursionlimit(15000)
         result = self.RESULT_TEMPLATE.copy()
         self.initialize_variables(page_content, url)
         self.parse_offer_data(result)
@@ -44,8 +45,8 @@ class Parser(BaseParser, BaseMethods):
             'language': self.get_json_value(self.page_json, self.JSON_PATHS['language']),
             'salary': self.parse_salary(),
             'work_type': self.parse_work_type(),
-            'city': self.parse_location('city'),
-            'country': self.parse_location('country'),
+            'city': list(self.parse_location('city')),
+            'country': list(self.parse_location('country')),
         })
 
     def parse_work_type(self):
@@ -105,11 +106,14 @@ class Parser(BaseParser, BaseMethods):
         technology_list = {}
         offer_technologies = self.get_json_value(self.page_json, self.JSON_PATHS['technologies'])
         get_technology = lambda tech: next(
-            (t for t in offer_technologies if t['sectionType'] == tech), {}
+            (t for t in offer_technologies if t['sectionType'] == tech or t['sectionType'] == f"{tech}\""), {}
         )
-
-        technology_list['required'] = get_technology('technologies-expected').get('textElements')
-        technology_list['optional'] = get_technology('technologies-optional').get('textElements')
+        required_technologies = get_technology('technologies-expected')
+        expected_technologies = get_technology('technologies-optional')
+        req_key = [key for key in required_technologies.keys() if 'textElements' in key]
+        exp_key = [key for key in expected_technologies.keys() if 'textElements' in key]
+        technology_list['required'] = required_technologies.get(req_key[0]) if len(req_key) > 0 else None
+        technology_list['optional'] = expected_technologies.get(exp_key[0]) if len(exp_key) > 0 else None
         return technology_list
 
     def parse_company_description(self):
@@ -124,8 +128,16 @@ class Parser(BaseParser, BaseMethods):
         json_text = self.doc.find("script", attrs={"id": re.compile(r".*__NEXT_DATA__.*")}).string        
         return json.loads(re.sub(r'(\\"":)', '":', repair_json(json_text)))[0]
     
-    def get_json_value(self, json_obj, json_path, key_index=0):
-        try:
-            return self.get_json_value(json_obj[json_path[key_index]], json_path, key_index + 1)
-        except (IndexError, KeyError, TypeError):
-            return json_obj
+    # def get_json_value(self, json_obj, json_path, key_index=0):
+    #     try:
+    #         return self.get_json_value(json_obj[json_path[key_index]], json_path, key_index + 1)
+    #     except (IndexError, KeyError, TypeError):
+    #         return json_obj
+
+    def get_json_value(self, json_obj, json_path):
+        for key in json_path:
+            try:
+                json_obj = json_obj[key]
+            except (IndexError, KeyError, TypeError):
+                return json_obj
+        return json_obj

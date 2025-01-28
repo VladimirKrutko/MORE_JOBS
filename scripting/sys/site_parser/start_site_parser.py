@@ -19,3 +19,4 @@ if __name__ == "__main__":
     args = arg_parser.parse_args()
     site_parser = SiteParser(args.site_name, args.mode)
     site_parser.parse()
+    

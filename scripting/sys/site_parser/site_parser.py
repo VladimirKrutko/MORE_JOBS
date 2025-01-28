@@ -2,7 +2,6 @@ from scripting.sys.site_data import SiteData
 from scripting.sys.sys_functions import *
 import importlib
 import os
-import pdb
 
 class SiteParser:
     def __init__(self, site, mode):
@@ -25,7 +24,6 @@ class SiteParser:
                 continue
             logging.info(f"Parse s3 file: {message_data['message']['s3_path']}")
             page_content = read_s3_object(message_data['message']['s3_path'])
-            pdb.set_trace()
             parsed_data = self.parser.parse(page_content, message_data['message']['url'])
             upate_page_status(message_data['message']['url'], URL_STATUS['parsed'])
             parsed_data['site'] = self.site_data.site

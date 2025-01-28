@@ -57,14 +57,14 @@ def signal_handler(sig, frame):
 
 def listeting_sqs(queue_url):
     while True:
-        logging.info("Listening to SQS queue: %s", queue_url)
+        logging.info("Listening SQS queue: %s", queue_url)
         response = SQS_CLIENT.receive_message(
             QueueUrl= queue_url,
             MaxNumberOfMessages= 1,
             VisibilityTimeout= 200,
             WaitTimeSeconds= 2,
         )
-        
+
         if 'Messages' in response:
             message = response['Messages'][0]
             logging.info("Received message: %s", message['MessageId'])
