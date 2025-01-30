@@ -36,7 +36,8 @@ def process_response(site_data, response, message):
     message = {
             "site": site_data.site,
             "url": message['message']['url'],
-            "mode": message['message']['mode'],
+            "mode": message['message']['mode'], # messsage['message'] -- for what? jsut message.something
+            # **message, think about it 
             "s3_path": file_path,
             }
     sqs_url = site_data.sqs_placement_parser if message['mode'] == 'placement' else site_data.sqs_page_parser
@@ -54,7 +55,16 @@ def start_crawler(site_data, site_crawler, site_login):
         try:
             logging.info(f"Get url: {message['message']['url']} Sleep for {site_data.crawler_delay} seconds")
             time.sleep(int(site_data.crawler_delay))
-            response = site_crawler.crawl(url=message['message']['url'], headers=login_data['headers'], cookies=login_data['cookies'])
+            response: dict = site_crawler.crawl(
+                url=message['message']['url'],
+                headers=login_data['headers'],
+                cookies=login_data['cookies']
+            ) # you are not gonna need it ###YAGNI
+        #     {
+        #     'content': html_content,
+        #     'status': status_code,
+        #     'headers': headers
+        # }
             if response['status'] == 200:
                 upate_page_status(message['message']['url'], URL_STATUS['downloaded'])
                 logging.info(f"Success response from {message['message']['url']}")
@@ -73,14 +83,17 @@ def start_crawler(site_data, site_crawler, site_login):
             continue
         if counter % site_data.relogin_interval == 0:
             login_data = site_login.login()
+
+        # time.sleep(int(site_data.crawler_delay)) # take a look 
         counter += 1
 
 def get_site_crawler(site_data):
     module_path = ''
-    if site_data.system_crawler is True:
-        module_path = "scripting.shop_modules.system_crawler"
-    else:
-        module_path = f"scripting.shop_modules.{site_data.site}.crawler"
+    # if site_data.system_crawler is True:
+    #     module_path = "scripting.shop_modules.system_crawler"
+    # else:
+    #     module_path = f"scripting.shop_modules.{site_data.site}.crawler"
+    module_path: str = "scripting.shop_modules.system_crawler" if site_data.system_crawler is True else f"scripting.shop_modules.{site_data.site}.crawler"
     module = importlib.import_module(module_path)
     return getattr(module, 'Crawler')
 

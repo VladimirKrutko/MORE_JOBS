@@ -1,0 +1,12 @@
+#!/bin/bash
+
+python3 MORE_JOBS/scripting/sys/start_site_crawler.py --site_name pracuj_pl &
+
+python3 MORE_JOBS/scripting/sys/site_parser/start_site_parser.py --site_name pracuj_pl --mode placement &
+
+python3 MORE_JOBS/scripting/sys/site_parser/start_site_parser.py --site_name pracuj_pl --mode page &
+
+python3 MORE_JOBS/scripting/sys/start_placement_loading.py &
+
+wait
+

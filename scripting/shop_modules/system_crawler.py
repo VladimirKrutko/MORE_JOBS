@@ -17,6 +17,7 @@ class Crawler(BaseCrawler):
                 response = requests.get(url, headers=headers if headers else self.DEFAULT_HEADERS, cookies=cookies, proxies=proxy)
             elif http_method.upper() == 'POST':
                 response = requests.post(url, headers=headers, cookies=cookies, proxies=proxy, data=post_body)
+            # response.raise_for_status()
             return response.text, response.status_code, response.headers
         except requests.RequestException as e:
             print(f"Failed to fetch {url}: {e}")

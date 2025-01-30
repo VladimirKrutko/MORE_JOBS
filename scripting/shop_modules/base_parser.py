@@ -34,4 +34,4 @@ class BaseParser(ABC):
         for key, value in result.items():
             if isinstance(value, str):
                 result[key] = value.lower()
-        return result 
+        return result

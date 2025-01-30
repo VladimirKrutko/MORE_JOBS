@@ -1,5 +1,9 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+webserver_config.py
+airflow.db
+logs/
+airflow.cfg
 *.py[cod]
 *$py.class
 offer*.html

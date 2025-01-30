@@ -2,7 +2,7 @@ from scripting.shop_modules.base_parser import *
 from .base_methods import BaseMethods
 from json_repair import repair_json
 import sys
-import pdb
+
 class Parser(BaseParser, BaseMethods):
     JSON_PATTERN = r"window\['kansas-offerview'\]\s*=\s*(\{.*?\});"
     WORKING_TIME = 8

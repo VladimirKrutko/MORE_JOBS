@@ -10,10 +10,10 @@ class SiteParser:
         self.mode = mode
         self.site_data = SiteData(site)
         self.is_placement = mode == 'placement'
-        self.parser = self.get_parser_classs()
+        self.parser = self.get_parser_class()
         self.listening_queue = self.site_data.sqs_placement_parser if self.is_placement else self.site_data.sqs_page_parser
 
-    def get_parser_classs(self):
+    def get_parser_class(self):
         parser_file = 'placement_parser' if self.is_placement else 'page_parser'
         parser_module = importlib.import_module(f"scripting.shop_modules.{self.site_data.site}.{parser_file}")
         return getattr(parser_module, 'Parser')(self.site_data.site)
@@ -24,7 +24,7 @@ class SiteParser:
             if message_data['message']['mode'] != self.mode:
                 continue
             logging.info(f"Parse s3 file: {message_data['message']['s3_path']}")
-            page_content = read_s3_object(message_data['message']['s3_path'])
+            page_content = read_s3_object(message_data['message']['s3_path']) # read html from s3
             try:
                 parsed_data = self.parser.parse(page_content, message_data['message']['url'])
             except:
