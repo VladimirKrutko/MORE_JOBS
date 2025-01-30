@@ -11,5 +11,5 @@ DATABASE_URL = (
 )
 
 engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine)
+Session = sessionmaker(bind=engine) # Create sessin as a singleton class
 Base = declarative_base()
