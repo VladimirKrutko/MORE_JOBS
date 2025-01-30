@@ -4,7 +4,7 @@ from scripting.shop_modules.base_login import BaseLogin
 class Login(BaseLogin):
     def login(self, proxy=None):
         with sync_playwright() as p:
-            browser = p.chromium.launch(proxy={"server": proxy}, headless=True) if proxy else p.chromium.launch(headless=False)
+            browser = p.firefox.launch(proxy={"server": proxy}, headless=True) if proxy else p.firefox.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
             login_url = "https://it.pracuj.pl/praca"
