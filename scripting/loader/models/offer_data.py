@@ -13,8 +13,8 @@ class OfferData(Base, BaseModel):
     responsibilities_md5 = Column(Text)
 
     @classmethod
-    def create(cls, **kwargs):
-        session = Session()
+    def create(cls,session, **kwargs):
+        # session = Session()
 
         offer_data = cls(**kwargs)
         session.add(offer_data)

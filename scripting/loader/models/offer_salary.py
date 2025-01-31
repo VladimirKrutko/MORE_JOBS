@@ -13,8 +13,8 @@ class OfferSalary(Base, BaseModel):
     offer = relationship("Offer")
 
     @classmethod
-    def create(cls, salary_value, salary_contract_type, offer_url):
-        session = Session()
+    def create(cls, session, salary_value, salary_contract_type, offer_url):
+        # session = Session()
 
         salary = session.query(Salary).filter(
             Salary.value == salary_value, Salary.contract_type == salary_contract_type

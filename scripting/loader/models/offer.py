@@ -18,16 +18,15 @@ class Offer(Base, BaseModel):
     offer_data = relationship("OfferData")
 
     @classmethod
-    def create(cls, url, name, position_level=None, data_id=None, site_name=None, company_name=None, active=True):
-        session = Session()
+    def create(cls, session, url, name, position_level=None, site_id=None, id_data=None, company_id=None, active=True):
+        # session = Session()
 
-        site = session.query(Site).filter(Site.name == site_name).first()
-        site_id = site.id if site else -1
+        site_id = site_id if site_id else -1
 
-        company = session.query(Company).filter(Company.name == company_name).first()
-        id_company = company.id if company else -1
+        # company = session.query(Company).filter(Company.name == company_name).first()
+        company_id = company_id if company_id else -1
 
-        id_data = data_id if data_id else -1
+        id_data = id_data if id_data else -1
         offer_row = cls.exists(url=url)
         if offer_row:
             print(f"Offer with URL '{url}' already exists!")
@@ -39,7 +38,7 @@ class Offer(Base, BaseModel):
             position_level=position_level,
             id_data=id_data,
             site_id=site_id,
-            id_company=id_company,
+            id_company=company_id,
             active=active
         )
         session.add(offer)

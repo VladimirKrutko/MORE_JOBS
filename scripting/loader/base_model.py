@@ -14,8 +14,8 @@ class BaseModel:
     update_date = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     @classmethod
-    def create(cls, **kwargs):
-        session = Session()
+    def create(cls,session, **kwargs):
+        # session = kwargs['session']
         existing_obj = cls.exists(**kwargs)
         if existing_obj:
             print(f"{cls.__name__} already exists!")
@@ -28,7 +28,7 @@ class BaseModel:
         return instance
 
     @classmethod
-    def update(cls, record_id, **kwargs):
+    def update(cls, session, record_id, **kwargs):
         session = Session()
         instance = session.query(cls).filter_by(id=record_id).first()
         if not instance:
