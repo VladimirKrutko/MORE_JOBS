@@ -88,8 +88,8 @@ def start_crawler(site_data, site_crawler, site_login):
         counter += 1
 
 def get_site_crawler(site_data):
-    module_path = ''
-    # if site_data.system_crawler is True:
+    # module_path = ''
+    # module_path =  if site_data.system_crawler is True:
     #     module_path = "scripting.shop_modules.system_crawler"
     # else:
     #     module_path = f"scripting.shop_modules.{site_data.site}.crawler"

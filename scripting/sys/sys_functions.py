@@ -20,7 +20,6 @@ URL_STATUS = {
     'saved': 'saved',
 }
 
-
 def upate_page_status(url, status):
     PageStatus.add_or_update_page_status(url, status)
 

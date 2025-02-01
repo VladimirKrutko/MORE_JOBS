@@ -8,7 +8,7 @@ import json
 from deep_translator import GoogleTranslator
 
 class DataProcessing(metaclass=StaticMeta):
-
+    
     def get_sqs_loader_message():
         response = SQS_CLIENT.receive_message(
             QueueUrl=SQS_LOADER,
