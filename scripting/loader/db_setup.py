@@ -10,6 +10,12 @@ DATABASE_URL = (
     f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
 )
 
-engine = create_engine(DATABASE_URL)
-Session = sessionmaker(bind=engine) # Create sessin as a singleton class
+
+
+engine = create_engine(DATABASE_URL,
+                       pool_size=20,
+                       max_overflow=30,
+                       pool_timeout=30 )
+
+Session = sessionmaker(bind=engine)
 Base = declarative_base()

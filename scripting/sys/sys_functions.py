@@ -1,10 +1,15 @@
 from scripting.sys.aws_variables import *
 from scripting.loader.models.page_status import PageStatus
 import logging
+import chromadb
 import json
 import sys
 import re
 
+CHROMADB_HOST = 'http://ec2-3-65-38-198.eu-central-1.compute.amazonaws.com'
+CROMADB_PORT = 8000
+CHROMA_DB_CLIENT = chromadb.HttpClient(host=CHROMADB_HOST, port=CROMADB_PORT)
+OLLAMA_HOST = 'http://localhost:11434/api/generate'
 SQS_CLIENT = session.client('sqs')
 S3_CLIENT = session.client('s3')
 MESSAGE_GROUP = 'site_crawler'
@@ -14,6 +19,7 @@ URL_STATUS = {
     'parsed': 'parsed',
     'saved': 'saved',
 }
+
 
 def upate_page_status(url, status):
     PageStatus.add_or_update_page_status(url, status)

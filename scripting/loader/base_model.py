@@ -29,7 +29,6 @@ class BaseModel:
 
     @classmethod
     def update(cls, session, record_id, **kwargs):
-        session = Session()
         instance = session.query(cls).filter_by(id=record_id).first()
         if not instance:
             print(f"{cls.__name__} with id {record_id} not found.")

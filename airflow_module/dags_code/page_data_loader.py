@@ -3,21 +3,21 @@ from scripting.loader.import_all_models import *
 from scripting.loader.db_setup import Session
 import hashlib
 import json
+import pdb
 
 """
 Class for loading data from s3 with parsed data into DWH
 """
 
 class PageDataLoader:
-    def __init__(self, s3_path):
+    def load_data(self, s3_path):
+        self.s3_path = s3_path
         self.page_data = json.loads(read_s3_object(s3_path))
-
-    def load_data(self):
         self.session = Session()
         dimension_data = self.load_dimension_data()
         self.load_fact_data(dimension_data)
+        self.session.commit()
         self.session.close()
-
 
     def load_dimension_data(self):
         geography_ids = self.load_geography_data()
@@ -82,6 +82,7 @@ class PageDataLoader:
         return offer.id
     
     def load_offer_geography(self, offer_id, geography_ids):
+        # pdb.set_trace()
         for geography_id in geography_ids:
             OfferGeography.create(
                 session= self.session,

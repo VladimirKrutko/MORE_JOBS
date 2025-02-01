@@ -14,8 +14,12 @@ class OfferData(Base, BaseModel):
 
     @classmethod
     def create(cls,session, **kwargs):
-        # session = Session()
-
+        offer_data = session.query(OfferData).filter(OfferData.requirements_md5 == kwargs["requirements_md5"], 
+                                           OfferData.responsibilities_md5 == kwargs['responsibilities_md5']).first()
+        if offer_data:
+            print(f"OfferData with requirements MD5 '{kwargs['requirements_md5']}' and responsibilities MD5 '{kwargs['responsibilities_md5']}' already exists!")
+            return offer_data
+        
         offer_data = cls(**kwargs)
         session.add(offer_data)
         session.commit()

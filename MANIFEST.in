@@ -1,0 +1,2 @@
+recursive-include MORE_JOBS/scripting *
+recursive-include MORE_JOBS/airflow_module *
