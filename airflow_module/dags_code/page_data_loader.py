@@ -1,3 +1,4 @@
+from airflow_module.dags_code.data_processing import DataProcessing
 from scripting.sys.sys_functions import read_s3_object
 from scripting.loader.import_all_models import *
 from scripting.loader.db_setup import Session
@@ -15,9 +16,10 @@ class PageDataLoader:
         self.page_data = json.loads(read_s3_object(s3_path))
         self.session = Session()
         dimension_data = self.load_dimension_data()
-        self.load_fact_data(dimension_data)
+        offer_id = self.load_fact_data(dimension_data)
         self.session.commit()
         self.session.close()
+        return {"offer_id": offer_id, 'offer_data_id': dimension_data['offer_data_id']}
 
     def load_dimension_data(self):
         geography_ids = self.load_geography_data()
@@ -35,6 +37,7 @@ class PageDataLoader:
         offer_id = self.load_offer(dimension_data["offer_data_id"], dimension_data["company_id"])
         self.load_offer_geography(offer_id, dimension_data["geography_ids"])
         self.load_offer_technology(offer_id, dimension_data["technology_ids"])
+        return offer_id
 
     def load_geography_data(self):
         return [ Geography.create(session= self.session, 
@@ -48,6 +51,7 @@ class PageDataLoader:
         }
     
     def load_offer_data(self):
+        print(f"Start page offer_data loading")
         offer_data = OfferData.create(
             session= self.session,
             requirements= self.page_data['requirements'],
@@ -55,7 +59,7 @@ class PageDataLoader:
             requirements_md5 = hashlib.md5(self.page_data['requirements'].encode()).hexdigest(),
             responsibilities_md5 = hashlib.md5(self.page_data['responsibilities'].encode()).hexdigest(),
             original_language = self.page_data['language'],
-            translated_data = {}
+            translated_data = {},
         )
         return offer_data.id
     
@@ -82,7 +86,6 @@ class PageDataLoader:
         return offer.id
     
     def load_offer_geography(self, offer_id, geography_ids):
-        # pdb.set_trace()
         for geography_id in geography_ids:
             OfferGeography.create(
                 session= self.session,
@@ -90,8 +93,8 @@ class PageDataLoader:
                 id_geography=geography_id
             )
         
-    def load_offer_technology(self, offer_id, techology_ids):
-        for tech_id in techology_ids['required']:
+    def load_offer_technology(self, offer_id, technology_ids):
+        for tech_id in technology_ids['required']:
             OfferTechnology.create(
                 session= self.session,
                 id_offer=offer_id,
@@ -99,7 +102,7 @@ class PageDataLoader:
                 obligatory=True
             )
         
-        for tech_id in techology_ids['optional']:
+        for tech_id in technology_ids['optional']:
             OfferTechnology.create(
                 session= self.session,
                 id_offer=offer_id,

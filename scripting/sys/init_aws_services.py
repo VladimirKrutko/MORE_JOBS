@@ -47,7 +47,7 @@ def create_queue_sqs(queue_name):
     )
     return response['QueueUrl']
 
-def reaed_config_file(site_name):
+def reade_config_file(site_name):
     with open(f"MORE_JOBS/scripting/site_configurations/{site_name}.json", "r") as file:
         return json.load(file)
     
@@ -55,10 +55,10 @@ def put_site_config_ddb(config_data):
     SITE_TABLE.put_item(Item=config_data)
 
 if __name__ == "__main__":
-    arg_page = argparse.ArgumentParser(description="Parase arguemtn for init_site script")
+    arg_page = argparse.ArgumentParser(description="Parse argument for init_site script")
     arg_page.add_argument("--site_name")
     args = arg_page.parse_args()
-    config_data = reaed_config_file(args.site_name)
+    config_data = reade_config_file(args.site_name)
     config_data.update(create_s3_buckets(config_data))
     config_data['sqs_crawler'] = create_queue_sqs(f"{args.site_name}_crawler")
     config_data['sqs_page_parser'] = create_queue_sqs(f"{args.site_name}_page_parser")

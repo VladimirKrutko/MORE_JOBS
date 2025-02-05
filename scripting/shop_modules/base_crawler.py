@@ -16,7 +16,7 @@ class BaseCrawler(ABC):
     @abstractmethod
     def crawl(self, task):
         """
-        Base method that should be realize in all creawlers
+        Base method that should be realize in all crawlers
         """
         pass
     

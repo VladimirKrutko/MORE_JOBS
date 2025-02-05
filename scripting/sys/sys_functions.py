@@ -1,15 +1,19 @@
-from scripting.sys.aws_variables import *
 from scripting.loader.models.page_status import PageStatus
+from scripting.sys.aws_variables import *
+from chromadb.config import Settings
 import logging
 import chromadb
 import json
 import sys
 import re
 
-CHROMADB_HOST = 'http://ec2-3-65-38-198.eu-central-1.compute.amazonaws.com'
-CROMADB_PORT = 8000
-CHROMA_DB_CLIENT = chromadb.HttpClient(host=CHROMADB_HOST, port=CROMADB_PORT)
+CHROMADB_HOST = 'ec2-3-124-249-83.eu-central-1.compute.amazonaws.com'
+CHROMADB_PORT = 8000
+CHROMA_COLLECTION_NAME = 'offers_llama'
+CHROMA_DB_CLIENT = chromadb.HttpClient(host=CHROMADB_HOST, port=CHROMADB_PORT,settings=Settings(allow_reset=True, anonymized_telemetry=False) )
 OLLAMA_HOST = 'http://localhost:11434/api/generate'
+LLM_MODEL = 'llama3.1'
+LLAMA_API = 'http://localhost:11434'
 SQS_CLIENT = session.client('sqs')
 S3_CLIENT = session.client('s3')
 MESSAGE_GROUP = 'site_crawler'
