@@ -85,16 +85,6 @@ class Parser(BaseParser, BaseMethods):
         }
         return list(map(process_salary, salary_data)) if salary_data else None
 
-    # def salary_amount(self, salary):
-    #     if salary is None:
-    #         return '-'
-    #     return {
-    #         'salary_amount': f"{salary['from']}-{salary['to']}",
-    #     }
-    #         # f"{salary['from'] * self.WORKING_TIME * self.WORKING_DAYS}-{salary['to'] * self.WORKING_TIME * self.WORKING_DAYS}"
-    #         # if salary['timeUnit']['longForm']['name'] != 'monthly'
-    #         # else f"{salary['from']}-{salary['to']}"
-
     def parse_rr_section(self, section_name):
         base_section = self.get_json_value(self.page_json, self.JSON_PATHS['company_description'])
         description_section = self.find_section(base_section, section_name)

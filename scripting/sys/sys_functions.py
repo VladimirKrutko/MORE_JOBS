@@ -10,9 +10,10 @@ import re
 CHROMADB_HOST = 'ec2-3-124-249-83.eu-central-1.compute.amazonaws.com'
 CHROMADB_PORT = 8000
 CHROMA_COLLECTION_NAME = 'offers_llama'
+CHROMA_COLLECTION_BASE_NAME = 'offers'
 CHROMA_DB_CLIENT = chromadb.HttpClient(host=CHROMADB_HOST, port=CHROMADB_PORT,settings=Settings(allow_reset=True, anonymized_telemetry=False) )
 OLLAMA_HOST = 'http://localhost:11434/api/generate'
-LLM_MODEL = 'llama3.1'
+LLM_MODEL =  'llama3.1'
 LLAMA_API = 'http://localhost:11434'
 SQS_CLIENT = session.client('sqs')
 S3_CLIENT = session.client('s3')

@@ -1,8 +1,10 @@
 from scripting.sys.sys_functions import (LLAMA_API, 
                                          LLM_MODEL, 
                                          CHROMA_DB_CLIENT, 
-                                         CHROMA_COLLECTION_NAME)
-from chromadb import EmbeddingFunction, OllamaEmbeddings
+                                         CHROMA_COLLECTION_NAME,
+                                         CHROMA_COLLECTION_BASE_NAME)
+from langchain_ollama import OllamaEmbeddings
+from chromadb import EmbeddingFunction
 
 class ChromaDBEmbeddingFunction(EmbeddingFunction):
     def __init__(self, langchain_embeddings):
@@ -13,7 +15,7 @@ class ChromaDBEmbeddingFunction(EmbeddingFunction):
 
 embedding = ChromaDBEmbeddingFunction(
     OllamaEmbeddings(
-        model=LLM_MODEL,
+        model= LLM_MODEL,
         base_url=LLAMA_API
         )
         )
@@ -24,10 +26,10 @@ chroma_collection = CHROMA_DB_CLIENT.get_or_create_collection(
     )
 
 class ChromaDB:
-
-    def __init__(self, num_results: int = 10):
+    def __init__(self, n_results: int = 10):
         self.collection = chroma_collection
-        self.num_results = num_results
+        self.n_results = n_results
+        self.base_collection = CHROMA_DB_CLIENT.get_or_create_collection(name=CHROMA_COLLECTION_BASE_NAME)
     
     def query_chroma_db(self, document: str):
         """
@@ -35,14 +37,27 @@ class ChromaDB:
         Args:
             document (str): The document to query the chroma db with.
         Returns:
-        dict: {document: ..., metadata: ...}
+        dict: {documents: ..., metadatas: ...}
         """
         result = self.collection.query(
-            document=document,
-            num_results=self.num_results
+            query_texts=document,
+            n_results=self.n_results
         )
         return {
-            'document': result['documents'],
-            'metadata': result['metadata']
+            'documents': result['documents'][0],
+            'metadatas': result['metadatas']
         }
     
+    def query_base_collection(self, document: str):
+        """
+        Query the base collection for the given document:
+        Args:
+            document (str): The document to query the base collection with.
+        Returns:
+        dict: {documents: ..., metadatas: ...}
+        """
+        result = self.base_collection.query(
+            query_texts=document,
+            n_results=self.n_results
+        )
+        return result
