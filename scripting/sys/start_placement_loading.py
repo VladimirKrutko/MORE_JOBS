@@ -6,7 +6,6 @@ import json
 
 signal.signal(signal.SIGINT, signal_handler)
 
-
 def sqs_message(url, site_data, mode):
     message = {
         'site': site_data.site,

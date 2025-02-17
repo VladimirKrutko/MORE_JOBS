@@ -40,6 +40,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-
-
-    # token = os.getenv('TELEGRAM_TOKEN')
