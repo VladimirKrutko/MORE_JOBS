@@ -1,5 +1,5 @@
-from scripting.shop_modules.pracuj_pl.base_methods import *
-from scripting.shop_modules.base_parser import BaseParser
+from scripting.site_modules.pracuj_pl.base_methods import *
+from scripting.site_modules.base_parser import BaseParser
 import re
 
 class Parser(BaseParser, BaseMethods):

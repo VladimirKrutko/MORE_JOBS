@@ -1,4 +1,4 @@
-from scripting.shop_modules.base_parser import *
+from scripting.site_modules.base_parser import *
 from .base_methods import BaseMethods
 from json_repair import repair_json
 import sys

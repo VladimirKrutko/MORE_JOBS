@@ -1,4 +1,4 @@
-from scripting.shop_modules.base_parser import *
+from scripting.site_modules.base_parser import *
 
 class BaseMethods:
     def initialize_variables(self, page_content, url):

@@ -1,4 +1,4 @@
-from scripting.shop_modules.base_crawler import BaseCrawler
+from scripting.site_modules.base_crawler import BaseCrawler
 from datetime import datetime
 import requests
 

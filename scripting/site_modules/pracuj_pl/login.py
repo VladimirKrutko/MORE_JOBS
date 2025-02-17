@@ -1,5 +1,5 @@
 from playwright.sync_api import sync_playwright
-from scripting.shop_modules.base_login import BaseLogin
+from scripting.site_modules.base_login import BaseLogin
 
 class Login(BaseLogin):
     def login(self, proxy=None):
