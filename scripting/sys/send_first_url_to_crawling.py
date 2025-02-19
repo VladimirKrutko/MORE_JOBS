@@ -3,6 +3,7 @@ from scripting.sys.sys_functions import *
 import argparse
 
 if __name__ == '__main__':
+    print("Start")
     configure_logging()
     arg_page = argparse.ArgumentParser(description="Parase arguemtn for init_site script")
     arg_page.add_argument("--site_name")

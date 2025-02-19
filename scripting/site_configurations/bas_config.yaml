@@ -1,7 +1,0 @@
-site_name: ""
-start_url: ""
-crawler_interwal: 0
-login: true
-login_url: ''
-accept_cookies_path: ''
-workers: 1 # continers count

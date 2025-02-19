@@ -54,17 +54,12 @@ def start_crawler(site_data, site_crawler, site_login):
         log(site_data, message, "start crawler")
         try:
             logging.info(f"Get url: {message['message']['url']} Sleep for {site_data.crawler_delay} seconds")
-            time.sleep(int(site_data.crawler_delay))
+            # time.sleep(int(site_data.crawler_delay))
             response: dict = site_crawler.crawl(
                 url=message['message']['url'],
                 headers=login_data['headers'],
                 cookies=login_data['cookies']
-            ) # you are not gonna need it ###YAGNI
-        #     {
-        #     'content': html_content,
-        #     'status': status_code,
-        #     'headers': headers
-        # }
+            ) 
             if response['status'] == 200:
                 upate_page_status(message['message']['url'], URL_STATUS['downloaded'])
                 logging.info(f"Success response from {message['message']['url']}")
@@ -84,21 +79,16 @@ def start_crawler(site_data, site_crawler, site_login):
         if counter % site_data.relogin_interval == 0:
             login_data = site_login.login()
 
-        # time.sleep(int(site_data.crawler_delay)) # take a look 
+        time.sleep(int(site_data.crawler_delay)) # take a look 
         counter += 1
 
 def get_site_crawler(site_data):
-    # module_path = ''
-    # module_path =  if site_data.system_crawler is True:
-    #     module_path = "scripting.shop_modules.system_crawler"
-    # else:
-    #     module_path = f"scripting.shop_modules.{site_data.site}.crawler"
-    module_path: str = "scripting.shop_modules.system_crawler" if site_data.system_crawler is True else f"scripting.shop_modules.{site_data.site}.crawler"
+    module_path: str = "scripting.site_modules.system_crawler" if site_data.system_crawler is True else f"scripting.site_modules.{site_data.site}.crawler"
     module = importlib.import_module(module_path)
     return getattr(module, 'Crawler')
 
 def get_site_login(site_data):
-    module =  importlib.import_module(f"scripting.shop_modules.{site_data.site}.login")
+    module =  importlib.import_module(f"scripting.site_modules.{site_data.site}.login")
     return getattr(module, 'Login')   
 
 if __name__ == "__main__":

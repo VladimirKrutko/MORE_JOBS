@@ -9,4 +9,3 @@ python3 MORE_JOBS/scripting/sys/site_parser/start_site_parser.py --site_name pra
 python3 MORE_JOBS/scripting/sys/start_placement_loading.py &
 
 wait
-

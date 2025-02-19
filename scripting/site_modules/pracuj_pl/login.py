@@ -4,11 +4,12 @@ from scripting.site_modules.base_login import BaseLogin
 class Login(BaseLogin):
     def login(self, proxy=None):
         with sync_playwright() as p:
-            browser = p.firefox.launch(proxy={"server": proxy}, headless=True) if proxy else p.firefox.launch(headless=True)
+            browser = p.firefox.launch(proxy={"server": proxy}, headless=False) if proxy else p.firefox.launch(headless=False)
             context = browser.new_context()
             page = context.new_page()
             login_url = "https://it.pracuj.pl/praca"
-            page.goto(login_url, timeout=60000)
+            page.goto(login_url, timeout=30000)
+            page.locator("//div[@class='popup_p1c6glb0']").click()
             page.locator("//button[@data-test=\"button-submitCookie\"]").click()
             page.wait_for_load_state("networkidle")
             cookies = context.cookies()

@@ -15,7 +15,7 @@ class SiteParser:
 
     def get_parser_class(self):
         parser_file = 'placement_parser' if self.is_placement else 'page_parser'
-        parser_module = importlib.import_module(f"scripting.shop_modules.{self.site_data.site}.{parser_file}")
+        parser_module = importlib.import_module(f"scripting.site_modules.{self.site_data.site}.{parser_file}")
         return getattr(parser_module, 'Parser')(self.site_data.site)
     
     def parse(self):
